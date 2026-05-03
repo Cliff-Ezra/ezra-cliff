@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const TRAIL_LEN = 10;
 const LAG = 0.1;
@@ -14,9 +14,11 @@ function drawGhost(
   scale: number,
   alpha: number,
   angle: number,
-  mouse?: { x: number; y: number },
+  mouse?: { x: number; y: number }
 ) {
   const s = 56 * scale;
+  if (s <= 0) return;
+
   ctx.save();
   ctx.globalAlpha = alpha;
   ctx.translate(x, y);
@@ -66,9 +68,9 @@ function drawGhost(
 }
 
 export default function GhostHero() {
+  const [eyeCoords, setEyeCoords] = useState({ x: 0, y: 0 });
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  // Lock scroll for the duration this page is mounted
   useEffect(() => {
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -76,72 +78,71 @@ export default function GhostHero() {
   }, []);
 
   useEffect(() => {
+    const isMobile =
+      typeof window !== "undefined" &&
+      (window.matchMedia("(pointer: coarse)").matches ||
+        "ontouchstart" in window ||
+        navigator.maxTouchPoints > 1);
+
+    if (isMobile) return;
+
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext("2d")!;
 
-    // Broad touch detection — matchMedia alone can misfire on some devices
-    const isMobile =
-      window.matchMedia("(pointer: coarse)").matches ||
-      "ontouchstart" in window ||
-      navigator.maxTouchPoints > 1;
-
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    resize();
-    window.addEventListener("resize", resize);
-
+    let raf: number;
+    let hasMouseMoved = false;
     let mouseX = window.innerWidth / 2;
     let mouseY = window.innerHeight / 2;
     let ghostX = mouseX;
     let ghostY = mouseY;
-    let prevGhostX = ghostX;
     let bobT = 0;
-    let statBobT = Math.PI;
     let tilt = 0;
     const trail: Array<{ x: number; y: number }> = [];
 
-    const onMouseMove = (e: MouseEvent) => {
+    const handleMouseMove = (e: MouseEvent) => {
+      hasMouseMoved = true;
       mouseX = e.clientX;
       mouseY = e.clientY;
+
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight * 0.68;
+      const dx = e.clientX - cx;
+      const dy = e.clientY - cy;
+      const dist = Math.hypot(dx, dy);
+      
+      if (dist > 0) {
+        const travel = Math.min(dist * 0.015, 5);
+        setEyeCoords({
+          x: (dx / dist) * travel,
+          y: (dy / dist) * travel,
+        });
+      }
     };
-    if (!isMobile) {
-      window.addEventListener("mousemove", onMouseMove);
-    }
 
-    let raf: number;
+    window.addEventListener("mousemove", handleMouseMove);
+
     const tick = () => {
-      statBobT += BOB_SPEED * 0.7;
-
-      // Text sits at ~45% height (shifted up by the paddingBottom on the flex
-      // container). Ghost is placed 180px below that centre — clear of the text.
-      const textCentreY = canvas.height * 0.45;
-      const statX = canvas.width / 2;
-      const statY = textCentreY + 180 + Math.sin(statBobT) * 7;
+      const parent = canvas.parentElement;
+      if (parent) {
+        if (canvas.width !== parent.clientWidth || canvas.height !== parent.clientHeight) {
+          canvas.width = parent.clientWidth;
+          canvas.height = parent.clientHeight;
+        }
+      }
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      const eyeTarget = isMobile
-        ? {
-            x: canvas.width / 2 + Math.sin(statBobT * 0.5) * 110,
-            y: canvas.height / 2 + Math.cos(statBobT * 0.37) * 80,
-          }
-        : { x: mouseX, y: mouseY };
-
-      // Stationary ghost — always drawn regardless of device
-      drawGhost(ctx, statX, statY, 1.8, 0.88, 0, eyeTarget);
-
-      // Cursor ghost + trail — desktop only
-      if (!isMobile) {
-        prevGhostX = ghostX;
+      if (hasMouseMoved) {
+        const prevGhostX = ghostX;
         ghostX += (mouseX - ghostX) * LAG;
         ghostY += (mouseY - ghostY) * LAG;
+        
         bobT += BOB_SPEED;
         const bob = Math.sin(bobT) * BOB_AMP;
         const vx = ghostX - prevGhostX;
         tilt += (vx * 0.04 - tilt) * 0.12;
         const drawY = ghostY + bob;
+
         trail.push({ x: ghostX, y: drawY });
         if (trail.length > TRAIL_LEN) trail.shift();
 
@@ -155,85 +156,135 @@ export default function GhostHero() {
 
       raf = requestAnimationFrame(tick);
     };
+    
     raf = requestAnimationFrame(tick);
 
     return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
       cancelAnimationFrame(raf);
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("resize", resize);
     };
   }, []);
 
   return (
-    <>
-      {/*
-        Canvas is a sibling of <main>, not a child.
-        iOS Safari clips position:fixed elements inside overflow:hidden — keeping
-        the canvas outside avoids that bug entirely.
-      */}
+    <main
+      className="ghost-bg"
+      style={{
+        position: "fixed",
+        inset: 0,
+        height: "100dvh",
+        overflow: "hidden",
+        backgroundColor: "#000",
+      }}
+    >
+      <style>{`
+        @keyframes ghost-bob {
+          0% { transform: translate(-50%, -50%) translateY(0px); }
+          50% { transform: translate(-50%, -50%) translateY(-12px); }
+          100% { transform: translate(-50%, -50%) translateY(0px); }
+        }
+      `}</style>
+
       <canvas
         ref={canvasRef}
         style={{
-          position: "fixed",
+          position: "absolute",
           inset: 0,
           pointerEvents: "none",
-          zIndex: 10,
+          zIndex: 1,
         }}
       />
-      <main
-        className="ghost-bg"
+
+      <div
         style={{
-          minHeight: "100vh",
-          position: "relative",
-          overflow: "hidden",
-          cursor: "none",
+          position: "absolute",
+          left: "50%",
+          top: "68%",
+          transform: "translate(-50%, -50%)",
+          animation: "ghost-bob 3s ease-in-out infinite",
+          zIndex: 1,
+          pointerEvents: "none",
         }}
       >
-        <div
+        <svg
+          viewBox="-50 -70 100 130"
           style={{
-            position: "absolute",
-            inset: 0,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "0 24px 10vh",
-            fontFamily: "sans-serif",
-            color: "white",
-            textAlign: "center",
-            userSelect: "none",
+            width: "clamp(120px, 26vh, 180px)",
+            height: "auto",
+            overflow: "visible",
+            opacity: 0.88,
           }}
         >
-          <span
+          <path
+            d="M -50 -20 A 50 50 0 0 1 50 -20 L 50 35 Q 33 55 17 35 Q 0 55 -17 35 Q -33 55 -50 35 Z"
+            fill="rgba(255,255,255,0.95)"
+          />
+          <g
             style={{
-              fontSize: 15,
-              fontWeight: 700,
-              letterSpacing: "0.25em",
-              textTransform: "uppercase",
-              opacity: 0.8,
-              marginBottom: 16,
+              transform: `translate(${eyeCoords.x}px, ${eyeCoords.y}px)`,
+              transition: "transform 0.1s ease-out",
             }}
           >
-            Ezra Cliff
-          </span>
-          <h1
-            style={{
-              fontSize: "clamp(32px, 6vw, 52px)",
-              fontWeight: 700,
-              letterSpacing: "-0.03em",
-              margin: "0 0 12px",
-            }}
-          >
-            coming soon
-          </h1>
-          <p style={{ fontSize: "clamp(13px, 2vw, 15px)", opacity: 0.65, margin: "0 0 6px" }}>
-            not haunted — something is just materializing
-          </p>
-          <p style={{ fontSize: "clamp(12px, 1.8vw, 14px)", opacity: 0.4, margin: 0 }}>
-            ezra left a ghost in charge
-          </p>
-        </div>
-      </main>
-    </>
+            <ellipse cx="-15" cy="-20" rx="9" ry="13" fill="#0f0f1a" />
+            <ellipse cx="15" cy="-20" rx="9" ry="13" fill="#0f0f1a" />
+          </g>
+        </svg>
+      </div>
+
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 2,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "flex-start",
+          paddingTop: "12vh",
+          fontFamily: "sans-serif",
+          color: "white",
+          textAlign: "center",
+          userSelect: "none",
+          padding: "12vh 24px 0",
+          pointerEvents: "none",
+        }}
+      >
+        <span
+          style={{
+            fontSize: 18, // Updated
+            fontWeight: 700,
+            letterSpacing: "0.25em",
+            textTransform: "uppercase",
+            opacity: 0.8,
+            marginBottom: 16,
+          }}
+        >
+          Ezra Cliff
+        </span>
+        <h1
+          style={{
+            fontSize: "clamp(28px, 6vw, 52px)",
+            fontWeight: 700,
+            letterSpacing: "-0.03em",
+            margin: "0 0 12px",
+          }}
+        >
+          coming soon
+        </h1>
+        <p style={{ 
+          fontSize: "clamp(15px, 2.5vw, 19px)", // Updated
+          opacity: 0.65, 
+          margin: "0 0 6px" 
+        }}>
+          not haunted — something is just materializing
+        </p>
+        <p style={{ 
+          fontSize: "clamp(14px, 2vw, 17px)", // Updated
+          opacity: 0.4, 
+          margin: 0 
+        }}>
+          ezra left a ghost in charge
+        </p>
+      </div>
+    </main>
   );
 }
