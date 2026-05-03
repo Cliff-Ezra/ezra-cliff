@@ -69,6 +69,7 @@ function drawGhost(
 
 export default function GhostHero() {
   const [eyeCoords, setEyeCoords] = useState({ x: 0, y: 0 });
+  const [isSpooked, setIsSpooked] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -165,6 +166,13 @@ export default function GhostHero() {
     };
   }, []);
 
+  const handlePokeGhost = (e: React.PointerEvent) => {
+    e.stopPropagation(); // Prevent background clicks from firing
+    if (isSpooked) return;
+    setIsSpooked(true);
+    setTimeout(() => setIsSpooked(false), 800);
+  };
+
   return (
     <main
       className="ghost-bg"
@@ -173,14 +181,31 @@ export default function GhostHero() {
         inset: 0,
         height: "100dvh",
         overflow: "hidden",
-        backgroundColor: "#000",
+        background: "linear-gradient(135deg, #0083B0, #00B4DB, #005C97, #36D1DC, #0083B0)",
+        backgroundSize: "400% 400%",
+        animation: "bgShift 18s ease infinite",
       }}
     >
       <style>{`
+        @keyframes bgShift {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        /* Updated: Removed the -50% translations here because the parent wrapper handles it now */
         @keyframes ghost-bob {
-          0% { transform: translate(-50%, -50%) translateY(0px); }
-          50% { transform: translate(-50%, -50%) translateY(-12px); }
-          100% { transform: translate(-50%, -50%) translateY(0px); }
+          0% { transform: translateY(0px); }
+          50% { transform: translateY(-12px); }
+          100% { transform: translateY(0px); }
+        }
+        @keyframes ghost-spook {
+          0% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(255,255,255,0)); }
+          15% { transform: scale(1.15) rotate(-8deg); filter: drop-shadow(0 0 15px rgba(255,255,255,0.8)); }
+          30% { transform: scale(1.15) rotate(8deg); }
+          45% { transform: scale(1.15) rotate(-8deg); }
+          60% { transform: scale(1.15) rotate(8deg); }
+          75% { transform: scale(1.15) rotate(-4deg); }
+          100% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 0px rgba(255,255,255,0)); }
         }
       `}</style>
 
@@ -194,40 +219,57 @@ export default function GhostHero() {
         }}
       />
 
+      {/* 
+        1. THE HIT-BOX WRAPPER: 
+        This div is now the target. It sits absolutely still and creates a massive padding 
+        area so mobile users cannot miss it. 
+      */}
       <div
+        onPointerDown={handlePokeGhost}
         style={{
           position: "absolute",
           left: "50%",
           top: "68%",
           transform: "translate(-50%, -50%)",
-          animation: "ghost-bob 3s ease-in-out infinite",
-          zIndex: 1,
-          pointerEvents: "none",
+          zIndex: 50, // Massive zIndex to ensure it sits on top of everything
+          cursor: "pointer",
+          touchAction: "manipulation", // Superior to "none", allows taps natively
+          WebkitTapHighlightColor: "transparent",
+          padding: "40px", // The invisible fat-finger buffer
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
-        <svg
-          viewBox="-50 -70 100 130"
-          style={{
-            width: "clamp(120px, 26vh, 180px)",
-            height: "auto",
-            overflow: "visible",
-            opacity: 0.88,
-          }}
-        >
-          <path
-            d="M -50 -20 A 50 50 0 0 1 50 -20 L 50 35 Q 33 55 17 35 Q 0 55 -17 35 Q -33 55 -50 35 Z"
-            fill="rgba(255,255,255,0.95)"
-          />
-          <g
+        {/* 2. THE BOBBING WRAPPER: Isolated animation fixes iOS transform bugs */}
+        <div style={{ animation: "ghost-bob 3s ease-in-out infinite" }}>
+          {/* 3. THE SVG: Stripped of interactivity, only handles visuals now */}
+          <svg
+            viewBox="-50 -70 100 130"
             style={{
-              transform: `translate(${eyeCoords.x}px, ${eyeCoords.y}px)`,
-              transition: "transform 0.1s ease-out",
+              width: "clamp(120px, 26vh, 180px)",
+              height: "auto",
+              overflow: "visible",
+              opacity: 0.88,
+              animation: isSpooked ? "ghost-spook 0.8s ease" : "none",
+              pointerEvents: "none", // Forces the browser to ignore the path and click the div wrapper
             }}
           >
-            <ellipse cx="-15" cy="-20" rx="9" ry="13" fill="#0f0f1a" />
-            <ellipse cx="15" cy="-20" rx="9" ry="13" fill="#0f0f1a" />
-          </g>
-        </svg>
+            <path
+              d="M -50 -20 A 50 50 0 0 1 50 -20 L 50 35 Q 33 55 17 35 Q 0 55 -17 35 Q -33 55 -50 35 Z"
+              fill="rgba(255,255,255,0.95)"
+            />
+            <g
+              style={{
+                transform: `translate(${eyeCoords.x}px, ${eyeCoords.y}px)`,
+                transition: "transform 0.1s ease-out", 
+              }}
+            >
+              <ellipse cx="-15" cy="-20" rx={isSpooked ? 12 : 9} ry={isSpooked ? 17 : 13} fill="#0f0f1a" style={{ transition: "all 0.2s ease" }} />
+              <ellipse cx="15" cy="-20" rx={isSpooked ? 12 : 9} ry={isSpooked ? 17 : 13} fill="#0f0f1a" style={{ transition: "all 0.2s ease" }} />
+            </g>
+          </svg>
+        </div>
       </div>
 
       <div
@@ -250,7 +292,7 @@ export default function GhostHero() {
       >
         <span
           style={{
-            fontSize: 18, // Updated
+            fontSize: 18,
             fontWeight: 700,
             letterSpacing: "0.25em",
             textTransform: "uppercase",
@@ -270,18 +312,10 @@ export default function GhostHero() {
         >
           coming soon
         </h1>
-        <p style={{ 
-          fontSize: "clamp(15px, 2.5vw, 19px)", // Updated
-          opacity: 0.65, 
-          margin: "0 0 6px" 
-        }}>
-          not haunted — something is just materializing
+        <p style={{ fontSize: "clamp(15px, 2.5vw, 19px)", opacity: 0.65, margin: "0 0 6px" }}>
+          not haunted - something&apos;s just materializing
         </p>
-        <p style={{ 
-          fontSize: "clamp(14px, 2vw, 17px)", // Updated
-          opacity: 0.4, 
-          margin: 0 
-        }}>
+        <p style={{ fontSize: "clamp(14px, 2vw, 17px)", opacity: 0.4, margin: 0 }}>
           ezra left a ghost in charge
         </p>
       </div>
