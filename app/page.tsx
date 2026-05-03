@@ -1,5 +1,5 @@
-import MonkeyHero from "@/app/components/MonkeyHero";
+import GhostHero from "@/app/components/GhostHero";
 
 export default function Page() {
-  return <MonkeyHero />;
+  return <GhostHero />;
 }
