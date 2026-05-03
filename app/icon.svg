@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <style>
+    .ghost {
+      animation: float 2.4s ease-in-out infinite;
+      transform-origin: 16px 16px;
+    }
+    .eye-left, .eye-right {
+      animation: blink 3.5s ease-in-out infinite;
+      transform-origin: center;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-3px); }
+    }
+    @keyframes blink {
+      0%, 90%, 100% { transform: scaleY(1); }
+      95%            { transform: scaleY(0.1); }
+    }
+  </style>
+
+  <g class="ghost">
+    <!-- Body -->
+    <path
+      d="M16 4 C9.4 4 4 9.4 4 16 L4 28 L7.5 25 L11 28 L14.5 25 L16 26.5 L17.5 25 L21 28 L24.5 25 L28 28 L28 16 C28 9.4 22.6 4 16 4Z"
+      fill="white"
+      stroke="#ccc"
+      stroke-width="0.5"
+    />
+    <!-- Eyes -->
+    <ellipse class="eye-left"  cx="12" cy="15" rx="2" ry="2.5" fill="#333"/>
+    <ellipse class="eye-right" cx="20" cy="15" rx="2" ry="2.5" fill="#333"/>
+    <!-- Cheek blush -->
+    <ellipse cx="10" cy="18" rx="1.5" ry="1" fill="#ffb3c1" opacity="0.6"/>
+    <ellipse cx="22" cy="18" rx="1.5" ry="1" fill="#ffb3c1" opacity="0.6"/>
+  </g>
+</svg>
