@@ -14,9 +14,10 @@ import {
   SquareTerminal,
   type LucideIcon,
 } from "lucide-react";
-import { Icon } from "@/app/components/ui";
+import { Icon, RevealItem, Stagger } from "@/app/components/ui";
 import { explorerTree, type ExplorerNode } from "@/app/lib/explorer";
 import { navLinks, site } from "@/app/lib/site";
+import { BashPrompt } from "./BashPrompt";
 
 /** Language dot colours (GitHub-linguist-ish) for the file-code glyphs. */
 const LANG_COLOR: Record<string, string> = {
@@ -160,40 +161,21 @@ export function Explorer({ inDrawer = false }: { inDrawer?: boolean }) {
         </nav>
       )}
 
-      {/* Tree */}
-      <div className="flex-1 overflow-y-auto" style={{ padding: "0 8px" }}>
-        {explorerTree.map((node) =>
-          node.type === "folder" ? (
-            <FolderRow key={node.name} node={node} depth={0} />
-          ) : (
-            <FileRow key={node.href} node={node} depth={0} />
-          ),
-        )}
-      </div>
+      {/* Tree — rows "print in" with a quick one-time stagger */}
+      <Stagger className="flex-1 overflow-y-auto" style={{ padding: "0 8px" }} stagger={0.04} delayChildren={0.12}>
+        {explorerTree.map((node) => (
+          <RevealItem key={node.type === "folder" ? node.name : node.href} y={4}>
+            {node.type === "folder" ? (
+              <FolderRow node={node} depth={0} />
+            ) : (
+              <FileRow node={node} depth={0} />
+            )}
+          </RevealItem>
+        ))}
+      </Stagger>
 
-      {/* Bash prompt footer — personality */}
-      <div
-        style={{
-          padding: "10px var(--space-base)",
-          borderTop: "1px solid var(--color-hairline)",
-          fontFamily: "var(--font-mono)",
-          fontSize: 11.5,
-          color: "var(--color-muted)",
-          display: "flex",
-          alignItems: "center",
-          gap: 1,
-        }}
-      >
-        <span style={{ color: "var(--color-success)" }}>cliff@nairobi</span>
-        <span>:</span>
-        <span style={{ color: "var(--color-text-link)" }}>~</span>
-        <span>$</span>
-        <span
-          aria-hidden
-          className="animate-pulse"
-          style={{ marginLeft: 4, width: 6, height: 13, background: "var(--color-body)", display: "inline-block" }}
-        />
-      </div>
+      {/* Bash prompt footer — typewriter, personality */}
+      <BashPrompt />
     </div>
   );
 }
