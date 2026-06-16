@@ -7,3 +7,7 @@ export { Icon } from "./Icon";
 export type { IconProps } from "./Icon";
 export { StatusDot } from "./StatusDot";
 export type { StatusTone } from "./StatusDot";
+export { ThemeToggle } from "./ThemeToggle";
+export { Wordmark } from "./Wordmark";
+export { useTheme } from "./useTheme";
+export type { Theme } from "./useTheme";

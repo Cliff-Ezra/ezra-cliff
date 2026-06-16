@@ -51,6 +51,11 @@
   --color-success: #16a34a;            /* "available" / "open to work" dot */
   --color-error: #eb8e90;
 
+  /* --- Chrome (top nav + status bar) — follows the theme --- */
+  --color-chrome: rgba(255, 255, 255, 0.85);   /* translucent, blurred */
+  --color-chrome-solid: #ffffff;               /* fallback / mobile drawer */
+  --color-chrome-border: var(--color-hairline-strong);
+
   /* --- Composed depth --- */
   --hero-sky-wash: radial-gradient(
     120% 80% at 50% 0%,
@@ -97,6 +102,11 @@
   --color-muted-soft: #4d4f55;
   --color-on-dark: #ededed;
   --color-on-dark-soft: #9aa0a8;
+
+  /* Chrome follows the theme */
+  --color-chrome: rgba(10, 10, 10, 0.85);
+  --color-chrome-solid: #0a0a0a;
+  --color-chrome-border: #232327;
 
   color-scheme: dark;
 }
