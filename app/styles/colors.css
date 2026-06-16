@@ -1,0 +1,102 @@
+/* ============================================================
+   COLORS — Astro design system palette + semantic aliases.
+   Light is the source-of-truth brand (pure white canvas, near-black
+   ink, pure-black CTA, blue reserved for inline links). Dark is an
+   added theme for the portfolio's theme toggle — it inverts the
+   surfaces/ink and flips the CTA to white-on-black.
+
+   Components reference the SEMANTIC tokens only (--color-canvas,
+   --color-ink, …) so a single [data-theme] flip re-themes everything.
+   ============================================================ */
+
+:root,
+:root[data-theme="light"] {
+  /* --- Brand & Accent --- */
+  --color-primary: #000000;            /* primary CTA fill, used scarcely */
+  --color-primary-active: #1a1a1a;     /* CTA press state */
+  --color-text-link: #0d74ce;          /* inline body links only — never a CTA */
+  --color-text-link-secondary: #476cff;/* inline links in legal footer copy */
+  --color-accent-link-bright: #47c2ff; /* docs-widget links, very sparing */
+
+  /* --- Surface --- */
+  --color-canvas: #ffffff;             /* page floor */
+  --color-canvas-soft: #fafafa;        /* subtle alternating band */
+  --color-surface-card: #ffffff;       /* card */
+  --color-surface-strong: #f0f0f3;     /* badges, secondary btns, tiles */
+  --color-surface-dark: #171717;       /* dark cards, code blocks, IDE chrome */
+  --color-surface-dark-elevated: #1a1a1a; /* one step lighter inside dark */
+
+  /* --- Atmospheric backdrop (hero only) --- */
+  --color-gradient-sky-light: #cfe7ff;
+  --color-gradient-sky-mid: #a8c8e8;
+
+  /* --- Hairlines --- */
+  --color-hairline: #f0f0f3;           /* default 1px divider */
+  --color-hairline-soft: #f5f5f7;      /* lighter divider */
+  --color-hairline-strong: #dcdee0;    /* stronger panel outline */
+
+  /* --- Text --- */
+  --color-ink: #171717;                /* display, body emphasis */
+  --color-body: #60646c;               /* default running text, cool gray */
+  --color-body-strong: #171717;
+  --color-muted: #999999;              /* sub-titles */
+  --color-muted-soft: #cccccc;         /* disabled text */
+  --color-on-primary: #ffffff;         /* text on the CTA fill */
+  --color-on-dark: #ffffff;            /* text on dark surfaces */
+  --color-on-dark-soft: #b0b4ba;       /* muted off-white on dark */
+
+  /* --- Semantic --- */
+  --color-warning: #ab6400;
+  --color-preview: #8145b5;
+  --color-success: #16a34a;            /* "available" / "open to work" dot */
+  --color-error: #eb8e90;
+
+  /* --- Composed depth --- */
+  --hero-sky-wash: radial-gradient(
+    120% 80% at 50% 0%,
+    var(--color-gradient-sky-light) 0%,
+    var(--color-gradient-sky-mid) 28%,
+    rgba(255, 255, 255, 0) 70%
+  );
+
+  color-scheme: light;
+}
+
+/* ------------------------------------------------------------
+   DARK THEME — surfaces/ink inverted, CTA flips to white-on-black,
+   links brightened. The dark code/IDE surface stays dark in both
+   themes (code is always a dark surface in this brand).
+   ------------------------------------------------------------ */
+:root[data-theme="dark"] {
+  /* CTA inverts so it reads on a dark canvas */
+  --color-primary: #ffffff;
+  --color-primary-active: #e6e6e6;
+  --color-on-primary: #000000;
+
+  --color-text-link: #47c2ff;
+  --color-text-link-secondary: #6f8bff;
+
+  /* Surfaces */
+  --color-canvas: #0a0a0a;
+  --color-canvas-soft: #111113;
+  --color-surface-card: #141416;
+  --color-surface-strong: #1f1f23;
+  --color-surface-dark: #141416;       /* code/IDE chrome, slightly elevated */
+  --color-surface-dark-elevated: #1d1d21;
+
+  /* Hairlines */
+  --color-hairline: #232327;
+  --color-hairline-soft: #1b1b1e;
+  --color-hairline-strong: #34343a;
+
+  /* Text */
+  --color-ink: #ededed;
+  --color-body: #a0a4ac;
+  --color-body-strong: #ededed;
+  --color-muted: #7a7d84;
+  --color-muted-soft: #4d4f55;
+  --color-on-dark: #ededed;
+  --color-on-dark-soft: #9aa0a8;
+
+  color-scheme: dark;
+}

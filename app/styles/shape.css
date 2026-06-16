@@ -1,0 +1,31 @@
+/* ============================================================
+   SHAPE & ELEVATION
+   Compact developer-ergonomic radii: 8px CTAs, 12px cards.
+   Pills reserved for badges only. Single soft drop shadow tier.
+   ============================================================ */
+
+:root {
+  /* --- Border radius --- */
+  --radius-none: 0px;
+  --radius-xs: 4px;     /* inline tags */
+  --radius-sm: 6px;     /* compact rows */
+  --radius-md: 8px;     /* CTA buttons, inputs, ecosystem tiles */
+  --radius-lg: 12px;    /* feature cards, code blocks, pricing tiers */
+  --radius-xl: 16px;    /* device mockup cards */
+  --radius-xxl: 24px;   /* larger atmospheric cards (rare) */
+  --radius-pill: 9999px;/* badges only */
+  --radius-full: 9999px;/* avatar plates (rare) */
+
+  /* --- Elevation --- */
+  --shadow-soft-drop: 0 4px 12px rgba(0, 0, 0, 0.04);  /* single hover tier */
+
+  /* --- Borders --- */
+  --border-hairline: 1px solid var(--color-hairline);
+  --border-hairline-soft: 1px solid var(--color-hairline-soft);
+  --border-hairline-strong: 1px solid var(--color-hairline-strong);
+}
+
+/* Hover shadow is barely visible on a dark canvas — lift it a touch. */
+:root[data-theme="dark"] {
+  --shadow-soft-drop: 0 4px 16px rgba(0, 0, 0, 0.4);
+}

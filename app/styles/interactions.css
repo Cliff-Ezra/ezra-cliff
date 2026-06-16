@@ -1,0 +1,16 @@
+/* ============================================================
+   INTERACTIONS — restrained hover/press. Black CTA darkens to
+   primary-active, secondary tints to surface-strong, text-links
+   underline. Cards lift the single soft drop shadow.
+   ============================================================ */
+
+.ds-btn--primary:hover:not([aria-disabled="true"]) { background: var(--color-primary-active); }
+.ds-btn--primary:active:not([aria-disabled="true"]) { background: var(--color-primary-active); transform: translateY(0.5px); }
+
+.ds-btn--secondary:hover:not([aria-disabled="true"]) { background: var(--color-surface-strong); }
+.ds-btn--secondary:active:not([aria-disabled="true"]) { background: var(--color-surface-strong); transform: translateY(0.5px); }
+
+.ds-btn--tertiary-text:hover:not([aria-disabled="true"]) { text-decoration: underline; }
+
+.ds-card-hover { transition: box-shadow 140ms ease, border-color 140ms ease; }
+.ds-card-hover:hover { box-shadow: var(--shadow-soft-drop); border-color: var(--color-hairline-strong); }
