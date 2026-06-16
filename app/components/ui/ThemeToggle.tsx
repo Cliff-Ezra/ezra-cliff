@@ -16,9 +16,12 @@ export function ThemeToggle({ compact = false }: { compact?: boolean }) {
 
   const trackW = compact ? 34 : 40;
   const trackH = compact ? 18 : 22;
+  const border = 1;
   const pad = 2;
-  const knob = trackH - pad * 2;
-  const slide = trackW - knob - pad * 2;
+  const innerW = trackW - border * 2;
+  const innerH = trackH - border * 2;
+  const knob = innerH - pad * 2;
+  const slide = innerW - knob - pad * 2;
   const iconSize = compact ? 8 : 10;
 
   return (
@@ -34,9 +37,8 @@ export function ThemeToggle({ compact = false }: { compact?: boolean }) {
         width: trackW,
         height: trackH,
         flexShrink: 0,
-        padding: pad,
         borderRadius: "var(--radius-pill)",
-        border: "1px solid var(--color-hairline-strong)",
+        border: `${border}px solid var(--color-hairline-strong)`,
         background: "var(--color-surface-strong)",
         cursor: "pointer",
         transition: "background 140ms ease, border-color 140ms ease",
@@ -45,6 +47,9 @@ export function ThemeToggle({ compact = false }: { compact?: boolean }) {
       <span
         aria-hidden
         style={{
+          position: "absolute",
+          top: "50%",
+          left: pad,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -53,7 +58,7 @@ export function ThemeToggle({ compact = false }: { compact?: boolean }) {
           borderRadius: "var(--radius-pill)",
           background: "var(--color-ink)",
           color: "var(--color-canvas)",
-          transform: `translateX(${isDark ? slide : 0}px)`,
+          transform: `translate(${isDark ? slide : 0}px, -50%)`,
           transition: "transform 160ms cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
