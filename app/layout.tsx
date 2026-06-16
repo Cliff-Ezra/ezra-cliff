@@ -51,7 +51,8 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body className="min-h-full flex flex-col">
+      {/* suppressHydrationWarning: browser extensions (e.g. Grammarly) inject */}
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
         {children}
         <Analytics />
       </body>
