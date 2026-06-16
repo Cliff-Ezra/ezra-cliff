@@ -14,6 +14,8 @@ export const site = {
   /** Real GitHub handle — an external identifier, kept as-is. */
   github: "https://github.com/Cliff-Ezra",
   githubLabel: "github.com/Cliff-Ezra",
+  linkedin: "https://www.linkedin.com/in/cliff-ezra0a3609215",
+  email: "cliffezra212@gmail.com",
   /** Repo / project label used in the explorer + prompt (matches the domain). */
   repo: "ezra-cliff",
   promptUser: "ezra",

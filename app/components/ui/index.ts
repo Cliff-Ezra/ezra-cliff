@@ -10,5 +10,6 @@ export type { StatusTone } from "./StatusDot";
 export { ThemeToggle } from "./ThemeToggle";
 export { Wordmark } from "./Wordmark";
 export { Stagger, RevealItem } from "./Reveal";
+export { ContactLinks } from "./ContactLinks";
 export { useTheme } from "./useTheme";
 export type { Theme } from "./useTheme";

@@ -1,12 +1,12 @@
 "use client";
 
-import { GitBranch, MapPin } from "lucide-react";
-import { Icon, StatusDot, ThemeToggle, useTheme } from "@/app/components/ui";
+import { GitBranch } from "lucide-react";
+import { ContactLinks, Icon, StatusDot, ThemeToggle, useTheme } from "@/app/components/ui";
 import { site } from "@/app/lib/site";
 
 /**
- * Mirrors an editor status line: branch · location · availability on the
- * left, encoding + theme switch on the right.
+ * Mirrors an editor status line: branch · online · contact links on the left,
+ * encoding + theme switch on the right.
  */
 export function StatusBar() {
   const { theme } = useTheme();
@@ -35,12 +35,10 @@ export function StatusBar() {
         <span style={itemStyle}>
           <Icon icon={GitBranch} size={13} /> {site.branch}
         </span>
-        <span style={itemStyle} className="hidden sm:inline-flex">
-          <Icon icon={MapPin} size={13} /> Nairobi
-        </span>
         <StatusDot tone="success" mono style={{ color: "var(--color-muted)" }}>
-          available
+          online
         </StatusDot>
+        <ContactLinks size={14} gap={10} />
 
         <div className="ml-auto flex items-center gap-4">
           <span style={itemStyle} className="hidden sm:inline-flex">
