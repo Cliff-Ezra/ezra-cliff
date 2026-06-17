@@ -1,7 +1,10 @@
+import { HomeShell } from "./HomeShell";
+import { Readme } from "./Readme";
+
 export default function HomePage() {
   return (
-    <main>
-      <h1>Portfolio — Home Page</h1>
-    </main>
+    <HomeShell>
+      <Readme />
+    </HomeShell>
   );
 }

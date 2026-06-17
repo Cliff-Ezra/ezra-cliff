@@ -1,0 +1,131 @@
+/* ============================================================
+   TYPOGRAPHY — Inter (single sans) + JetBrains Mono (all code).
+   Families are wired to the next/font variables in layout.tsx
+   (--font-inter / --font-jetbrains). Display weight stays 600 with
+   negative tracking; body is 400.
+   ============================================================ */
+
+:root {
+  /* --- Families (next/font supplies --font-inter / --font-jetbrains) --- */
+  --font-sans: var(--font-inter), -apple-system, system-ui, "Segoe UI", sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* --- Weights --- */
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  /* --- Display scale --- */
+  --type-display-mega-size: 64px;
+  --type-display-mega-leading: 1.05;
+  --type-display-mega-tracking: -1.92px;
+
+  --type-display-xl-size: 48px;
+  --type-display-xl-leading: 1.1;
+  --type-display-xl-tracking: -1.44px;
+
+  --type-display-lg-size: 36px;
+  --type-display-lg-leading: 1.15;
+  --type-display-lg-tracking: -1.08px;
+
+  --type-display-md-size: 28px;
+  --type-display-md-leading: 1.2;
+  --type-display-md-tracking: -0.84px;
+
+  --type-display-sm-size: 22px;
+  --type-display-sm-leading: 1.25;
+  --type-display-sm-tracking: -0.5px;
+
+  /* --- Titles --- */
+  --type-title-md-size: 18px;
+  --type-title-md-leading: 1.4;
+  --type-title-sm-size: 16px;
+  --type-title-sm-leading: 1.4;
+
+  /* --- Body --- */
+  --type-body-md-size: 16px;
+  --type-body-md-leading: 1.5;
+  --type-body-sm-size: 14px;
+  --type-body-sm-leading: 1.5;
+
+  /* --- Captions / labels --- */
+  --type-caption-size: 13px;
+  --type-caption-leading: 1.4;
+  --type-caption-uppercase-size: 11px;
+  --type-caption-uppercase-leading: 1.4;
+  --type-caption-uppercase-tracking: 0.88px;
+
+  /* --- Code --- */
+  --type-code-size: 13px;
+  --type-code-leading: 1.5;
+
+  /* --- Interactive --- */
+  --type-button-size: 14px;
+  --type-button-leading: 1;
+  --type-nav-link-size: 14px;
+  --type-nav-link-leading: 1.4;
+}
+
+/* ---- Reusable role classes ---- */
+.ds-display-mega {
+  font-family: var(--font-sans);
+  font-weight: var(--weight-semibold);
+  font-size: var(--type-display-mega-size);
+  line-height: var(--type-display-mega-leading);
+  letter-spacing: var(--type-display-mega-tracking);
+  color: var(--color-ink);
+}
+.ds-display-xl {
+  font-family: var(--font-sans);
+  font-weight: var(--weight-semibold);
+  font-size: var(--type-display-xl-size);
+  line-height: var(--type-display-xl-leading);
+  letter-spacing: var(--type-display-xl-tracking);
+  color: var(--color-ink);
+}
+.ds-display-lg {
+  font-family: var(--font-sans);
+  font-weight: var(--weight-semibold);
+  font-size: var(--type-display-lg-size);
+  line-height: var(--type-display-lg-leading);
+  letter-spacing: var(--type-display-lg-tracking);
+  color: var(--color-ink);
+}
+.ds-display-md {
+  font-family: var(--font-sans);
+  font-weight: var(--weight-semibold);
+  font-size: var(--type-display-md-size);
+  line-height: var(--type-display-md-leading);
+  letter-spacing: var(--type-display-md-tracking);
+  color: var(--color-ink);
+}
+.ds-display-sm {
+  font-family: var(--font-sans);
+  font-weight: var(--weight-semibold);
+  font-size: var(--type-display-sm-size);
+  line-height: var(--type-display-sm-leading);
+  letter-spacing: var(--type-display-sm-tracking);
+  color: var(--color-ink);
+}
+.ds-body {
+  font-family: var(--font-sans);
+  font-weight: var(--weight-regular);
+  font-size: var(--type-body-md-size);
+  line-height: var(--type-body-md-leading);
+  color: var(--color-body);
+}
+.ds-caption-uppercase {
+  font-family: var(--font-sans);
+  font-weight: var(--weight-semibold);
+  font-size: var(--type-caption-uppercase-size);
+  line-height: var(--type-caption-uppercase-leading);
+  letter-spacing: var(--type-caption-uppercase-tracking);
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+.ds-code {
+  font-family: var(--font-mono);
+  font-weight: var(--weight-regular);
+  font-size: var(--type-code-size);
+  line-height: var(--type-code-leading);
+}
