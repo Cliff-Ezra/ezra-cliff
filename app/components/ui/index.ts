@@ -11,5 +11,6 @@ export { ThemeToggle } from "./ThemeToggle";
 export { Wordmark } from "./Wordmark";
 export { Stagger, RevealItem } from "./Reveal";
 export { ContactLinks } from "./ContactLinks";
+export { GithubMark, LinkedinMark } from "./BrandIcons";
 export { useTheme } from "./useTheme";
 export type { Theme } from "./useTheme";
