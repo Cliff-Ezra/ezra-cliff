@@ -31,14 +31,12 @@ export const explorerTree: ExplorerNode[] = [
     name: "projects",
     defaultOpen: true,
     children: [
-      // Per-project detail pages don't exist yet, so each file links to the
-      // /work index for now. Point at /work/<slug> once detail pages are built.
-      { type: "file", name: "autopesa.go", href: "/work" },
-      { type: "file", name: "law-guru.ts", href: "/work" },
-      { type: "file", name: "oncoworld.ts", href: "/work" },
-      { type: "file", name: "sproutrealty.php", href: "/work" },
-      { type: "file", name: "bloodpoint.php", href: "/work" },
-      { type: "file", name: "cpims.dart", href: "/work" },
+      { type: "file", name: "autopesa.go", href: "/work/autopesa" },
+      { type: "file", name: "law-guru.ts", href: "/work/law-guru" },
+      { type: "file", name: "oncoworld.ts", href: "/work/oncoworld" },
+      { type: "file", name: "sproutrealty.php", href: "/work/sproutrealty" },
+      { type: "file", name: "bloodpoint.php", href: "/work/bloodpoint" },
+      { type: "file", name: "cpims.dart", href: "/work/cpims" },
     ],
   },
   { type: "file", name: "experience.json", href: "/experience" },
