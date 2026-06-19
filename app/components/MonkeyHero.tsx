@@ -101,7 +101,7 @@ export default function MonkeyHero() {
       >
         {/* Neutral image — always visible */}
         <Image
-          src="/monkey-neutral.png"
+          src="/images/decorative/monkey-neutral.png"
           alt="Monkey mascot"
           fill
           style={{ objectFit: "contain", userSelect: "none" }}
@@ -110,7 +110,7 @@ export default function MonkeyHero() {
 
         {/* Smile image — fades in on hover */}
         <Image
-          src="/monkey-happy.png"
+          src="/images/decorative/monkey-happy.png"
           alt="Monkey mascot smiling"
           fill
           style={{

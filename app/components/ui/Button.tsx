@@ -16,6 +16,7 @@ export type ButtonProps = {
   variant?: ButtonVariant;
   size?: ButtonSize;
   href?: string;
+  download?: boolean | string;
   disabled?: boolean;
   iconLeft?: ReactNode;
   iconRight?: ReactNode;
@@ -55,6 +56,7 @@ export function Button({
   variant = "primary",
   size = "md",
   href,
+  download,
   disabled = false,
   iconLeft,
   iconRight,
@@ -99,6 +101,21 @@ export function Button({
   );
 
   if (href && !disabled) {
+    // A same-origin download (e.g. the CV) saves the file directly.
+    if (download) {
+      return (
+        <a
+          href={href}
+          download={download}
+          className={cls}
+          style={mergedStyle}
+          aria-label={ariaLabel}
+          onClick={onClick}
+        >
+          {inner}
+        </a>
+      );
+    }
     const external = /^https?:\/\//.test(href) || href.endsWith(".pdf");
     if (external) {
       return (

@@ -39,7 +39,7 @@ export const explorerTree: ExplorerNode[] = [
       { type: "file", name: "cpims.dart", href: "/work/cpims" },
     ],
   },
-  { type: "file", name: "experience.json", href: "/experience" },
+  { type: "file", name: "about.md", href: "/about" },
   { type: "file", name: "skills.yaml", href: "/about#skills" },
   {
     type: "folder",
