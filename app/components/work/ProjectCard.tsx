@@ -4,29 +4,16 @@ import Link from "next/link";
 import { GithubMark, Tag } from "@/app/components/ui";
 import type { Project } from "@/app/lib/projects";
 import { repoLabel, repoUrl } from "@/app/lib/github";
-
-/**
- * Deterministic two-stop gradient seeded from the slug, so each card's cover
- * art placeholder is stable across renders but distinct per project. Replaced
- * by real screenshots / painterly covers later.
- */
-function coverGradient(slug: string): string {
-  let hash = 0;
-  for (let i = 0; i < slug.length; i++) {
-    hash = (hash * 31 + slug.charCodeAt(i)) % 360;
-  }
-  const a = hash;
-  const b = (hash + 80) % 360;
-  return `linear-gradient(135deg, hsl(${a} 62% 58%), hsl(${b} 58% 52%))`;
-}
+import { coverGradient } from "@/app/lib/cover";
 
 /**
  * ProjectCard — one project tile: cover art, name + category·year, a
- * plain-language summary, lowercase stack tags, and links (case study /
- * GitHub repo / live demo). The card is NOT a single link so the inner links
- * stay independently clickable.
+ * plain-language summary, lowercase stack tags, and links (GitHub repo / live
+ * demo). The cover and title link to the project's detail page; the footer
+ * repo / live links stay independently clickable.
  */
 export function ProjectCard({ project }: { project: Project }) {
+  const detailHref = `/work/${project.slug}`;
   return (
     <article
       className="ds-card-hover"
@@ -40,7 +27,9 @@ export function ProjectCard({ project }: { project: Project }) {
       }}
     >
       {/* Cover art (placeholder gradient — real screenshots land later) */}
-      <div style={{ aspectRatio: "16 / 9", background: coverGradient(project.slug) }} />
+      <Link href={detailHref} aria-label={`${project.name} — details`} className="block no-underline">
+        <div style={{ aspectRatio: "16 / 9", background: coverGradient(project.slug) }} />
+      </Link>
 
       {/* Body */}
       <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: "18px 20px" }}>
@@ -63,8 +52,10 @@ export function ProjectCard({ project }: { project: Project }) {
             >
               {project.glyph}
             </span>
-            <h3 className="truncate" style={{ fontWeight: 600, fontSize: 18, color: "var(--color-ink)" }}>
-              {project.name}
+            <h3 className="truncate" style={{ fontWeight: 600, fontSize: 18 }}>
+              <Link href={detailHref} className="no-underline" style={{ color: "var(--color-ink)" }}>
+                {project.name}
+              </Link>
             </h3>
           </div>
           <span
