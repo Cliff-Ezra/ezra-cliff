@@ -72,13 +72,12 @@ export function AboutPage() {
               <div className="mt-5">
                 <Button
                   href={site.cv}
-                  download="Cliff-Ezra-Esau-CV.pdf"
                   variant="primary"
                   size="md"
                   iconLeft={<Download size={15} />}
                   style={{ fontFamily: "var(--font-mono)" }}
                 >
-                  Download CV
+                  View / Download CV
                 </Button>
               </div>
             </div>
