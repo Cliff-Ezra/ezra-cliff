@@ -1,9 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { Button, Icon, ThemeToggle, Wordmark } from "@/app/components/ui";
 import { contactHref, navLinks, site } from "@/app/lib/site";
+
+/** A nav link is active on its own route and any nested route below it. */
+function isActivePath(pathname: string, href: string): boolean {
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 /**
  * TopNav — the global, constant navigation. Theme-aware chrome (light bar in
@@ -18,6 +24,8 @@ export function TopNav({
   drawerOpen: boolean;
   onDrawerToggle: () => void;
 }) {
+  const pathname = usePathname();
+
   return (
     <header
       className="sticky top-0 z-40"
@@ -57,21 +65,29 @@ export function TopNav({
         {/* Right cluster: lowercase mono section links + ⌘K + toggle + Contact */}
         <div className="ml-auto flex items-center gap-5 sm:gap-6">
           <nav className="hidden items-center gap-5 md:flex">
-            {navLinks.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                className="no-underline opacity-65 transition-opacity hover:opacity-100"
-                style={{
-                  fontFamily: "var(--font-mono)",
-                  fontSize: 13,
-                  fontWeight: 500,
-                  color: "var(--color-ink)",
-                }}
-              >
-                {l.label.toLowerCase()}
-              </Link>
-            ))}
+            {navLinks.map((l) => {
+              const active = isActivePath(pathname, l.href);
+              return (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  aria-current={active ? "page" : undefined}
+                  className={
+                    active
+                      ? "no-underline opacity-100"
+                      : "no-underline opacity-65 transition-opacity hover:opacity-100"
+                  }
+                  style={{
+                    fontFamily: "var(--font-mono)",
+                    fontSize: 13,
+                    fontWeight: active ? 600 : 500,
+                    color: "var(--color-ink)",
+                  }}
+                >
+                  {l.label.toLowerCase()}
+                </Link>
+              );
+            })}
           </nav>
 
           {/* Command palette affordance (wired in a later step) */}
