@@ -12,6 +12,15 @@
 
 .ds-btn--tertiary-text:hover:not([aria-disabled="true"]) { text-decoration: underline; }
 
+/* Form fields — inline outline:none is replaced by an accessible focus border
+   plus a soft ink ring. */
+.ds-field { transition: border-color 120ms ease, box-shadow 120ms ease; }
+.ds-field:focus {
+  border-color: var(--color-ink);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-ink) 10%, transparent);
+}
+.ds-field::placeholder { color: var(--color-muted-soft); }
+
 .ds-card-hover { transition: box-shadow 140ms ease, border-color 140ms ease; }
 .ds-card-hover:hover { box-shadow: var(--shadow-soft-drop); border-color: var(--color-hairline-strong); }
 
