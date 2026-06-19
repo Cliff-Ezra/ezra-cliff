@@ -1,9 +1,12 @@
 "use client";
 
 import { useState, type CSSProperties } from "react";
-import { motion, useReducedMotion, type Variants } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion, type Variants } from "motion/react";
+import { Check } from "lucide-react";
 import { Button } from "@/app/components/ui";
 import { site } from "@/app/lib/site";
+
+type Status = "idle" | "submitting" | "success" | "error";
 
 /** Uppercase mono field label, matching the contact mock. */
 const labelStyle: CSSProperties = {
@@ -63,14 +66,34 @@ export function ContactPage() {
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
+  const [company, setCompany] = useState(""); // honeypot — real users never see/fill this
+  const [status, setStatus] = useState<Status>("idle");
+  const [errorMsg, setErrorMsg] = useState("");
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const body = `${message}\n\n— ${name}${email ? ` (${email})` : ""}`;
-    const href = `mailto:${site.email}?subject=${encodeURIComponent(
-      subject || `Hello from ${name || "your site"}`,
-    )}&body=${encodeURIComponent(body)}`;
-    window.location.href = href;
+    if (status === "submitting") return;
+    setStatus("submitting");
+    setErrorMsg("");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, subject, message, company }),
+      });
+      if (!res.ok) {
+        const data = (await res.json().catch(() => ({}))) as { error?: string };
+        throw new Error(data.error || "Something went wrong.");
+      }
+      setStatus("success");
+      setName("");
+      setEmail("");
+      setSubject("");
+      setMessage("");
+    } catch (err) {
+      setStatus("error");
+      setErrorMsg(err instanceof Error ? err.message : "Something went wrong.");
+    }
   }
 
   // Staggered entrance: each panel cascades its children in.
@@ -135,68 +158,145 @@ export function ContactPage() {
             </div>
           </motion.div>
 
-          {/* Right panel — white: the form */}
-          <motion.form
-            onSubmit={handleSubmit}
-            className="flex flex-col gap-5 p-7 sm:p-9"
-            style={{ background: "var(--color-surface-card)" }}
-            variants={container}
-            initial="hidden"
-            animate="show"
-          >
-            <motion.div variants={item}>
-              <label htmlFor="c-name" style={labelStyle}>Name</label>
-              <input
-                id="c-name"
-                type="text"
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="ds-field"
-                style={fieldStyle}
-              />
-            </motion.div>
-            <motion.div variants={item}>
-              <label htmlFor="c-email" style={labelStyle}>Email</label>
-              <input
-                id="c-email"
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="ds-field"
-                style={fieldStyle}
-              />
-            </motion.div>
-            <motion.div variants={item}>
-              <label htmlFor="c-subject" style={labelStyle}>What&apos;s this about?</label>
-              <input
-                id="c-subject"
-                type="text"
-                value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-                className="ds-field"
-                style={fieldStyle}
-              />
-            </motion.div>
-            <motion.div variants={item}>
-              <label htmlFor="c-message" style={labelStyle}>Message</label>
-              <textarea
-                id="c-message"
-                required
-                rows={5}
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                className="ds-field"
-                style={{ ...fieldStyle, resize: "vertical", minHeight: 120 }}
-              />
-            </motion.div>
-            <motion.div variants={item}>
-              <Button type="submit" variant="primary" size="md">
-                Send message
-              </Button>
-            </motion.div>
-          </motion.form>
+          {/* Right panel — white: the form, or a success state once sent */}
+          <div className="p-7 sm:p-9" style={{ background: "var(--color-surface-card)" }}>
+            <AnimatePresence mode="wait">
+              {status === "success" ? (
+                <motion.div
+                  key="success"
+                  initial={{ opacity: 0, y: reduce ? 0 : 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                  className="flex h-full flex-col items-start justify-center gap-3"
+                  role="status"
+                  aria-live="polite"
+                >
+                  <span
+                    className="inline-flex items-center justify-center"
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: "var(--radius-pill)",
+                      background: "var(--color-surface-strong)",
+                      color: "var(--color-success)",
+                    }}
+                  >
+                    <Check size={20} strokeWidth={2.5} />
+                  </span>
+                  <h2 className="ds-display-sm">Message sent.</h2>
+                  <p className="ds-body" style={{ fontSize: 15, maxWidth: 320 }}>
+                    Thanks for reaching out — I&apos;ll get back to you within a day.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setStatus("idle")}
+                    style={{
+                      marginTop: 4,
+                      background: "transparent",
+                      border: "none",
+                      padding: 0,
+                      cursor: "pointer",
+                      fontFamily: "var(--font-mono)",
+                      fontSize: 13,
+                      color: "var(--color-text-link)",
+                    }}
+                  >
+                    send another →
+                  </button>
+                </motion.div>
+              ) : (
+                <motion.form
+                  key="form"
+                  onSubmit={handleSubmit}
+                  className="flex flex-col gap-5"
+                  variants={container}
+                  initial="hidden"
+                  animate="show"
+                  exit={{ opacity: 0 }}
+                >
+                  {/* Honeypot — hidden from real users; bots that fill it are dropped. */}
+                  <div aria-hidden style={{ position: "absolute", left: "-9999px", width: 1, height: 1, overflow: "hidden" }}>
+                    <label htmlFor="c-company">Company</label>
+                    <input
+                      id="c-company"
+                      type="text"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={company}
+                      onChange={(e) => setCompany(e.target.value)}
+                    />
+                  </div>
+
+                  <motion.div variants={item}>
+                    <label htmlFor="c-name" style={labelStyle}>Name</label>
+                    <input
+                      id="c-name"
+                      type="text"
+                      required
+                      maxLength={100}
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="ds-field"
+                      style={fieldStyle}
+                    />
+                  </motion.div>
+                  <motion.div variants={item}>
+                    <label htmlFor="c-email" style={labelStyle}>Email</label>
+                    <input
+                      id="c-email"
+                      type="email"
+                      required
+                      maxLength={200}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="ds-field"
+                      style={fieldStyle}
+                    />
+                  </motion.div>
+                  <motion.div variants={item}>
+                    <label htmlFor="c-subject" style={labelStyle}>What&apos;s this about?</label>
+                    <input
+                      id="c-subject"
+                      type="text"
+                      maxLength={150}
+                      value={subject}
+                      onChange={(e) => setSubject(e.target.value)}
+                      className="ds-field"
+                      style={fieldStyle}
+                    />
+                  </motion.div>
+                  <motion.div variants={item}>
+                    <label htmlFor="c-message" style={labelStyle}>Message</label>
+                    <textarea
+                      id="c-message"
+                      required
+                      rows={5}
+                      maxLength={5000}
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      className="ds-field"
+                      style={{ ...fieldStyle, resize: "vertical", minHeight: 120 }}
+                    />
+                  </motion.div>
+                  <motion.div variants={item}>
+                    <Button type="submit" variant="primary" size="md" disabled={status === "submitting"}>
+                      {status === "submitting" ? "Sending…" : "Send message"}
+                    </Button>
+                    {status === "error" && (
+                      <p
+                        role="alert"
+                        className="mt-3"
+                        style={{ fontFamily: "var(--font-mono)", fontSize: 12.5, color: "var(--color-warning)" }}
+                      >
+                        {errorMsg}
+                      </p>
+                    )}
+                  </motion.div>
+                </motion.form>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
     </div>
