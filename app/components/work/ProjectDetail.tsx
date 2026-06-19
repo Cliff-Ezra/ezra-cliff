@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button, GithubMark, Tag } from "@/app/components/ui";
+import { Button, GithubMark, ScrollReveal, Tag } from "@/app/components/ui";
 import type { Project } from "@/app/lib/projects";
 import { coverGradient } from "@/app/lib/cover";
 import { repoUrl } from "@/app/lib/github";
@@ -60,12 +60,14 @@ function ShotFrame({ seed, caption }: { seed: string; caption: string }) {
 function StorySection({ title, body }: { title: string; body?: string }) {
   if (!body) return null;
   return (
-    <section>
-      <h2 className="ds-display-sm">{title}</h2>
-      <p className="ds-body" style={{ marginTop: 12, fontSize: 16, maxWidth: 640 }}>
-        {body}
-      </p>
-    </section>
+    <ScrollReveal>
+      <section>
+        <h2 className="ds-display-sm">{title}</h2>
+        <p className="ds-body" style={{ marginTop: 12, fontSize: 16, maxWidth: 640 }}>
+          {body}
+        </p>
+      </section>
+    </ScrollReveal>
   );
 }
 
@@ -177,45 +179,50 @@ export function ProjectDetail({ project }: { project: Project }) {
               <StorySection title="What I built" body={project.build} />
 
               {project.shots && project.shots.length > 0 && (
-                <section>
-                  <h2 className="ds-display-sm">Screenshots</h2>
-                  {/* Horizontally scrollable strip; each frame keeps a fixed width. */}
-                  <div
-                    className="mt-4 flex gap-5 overflow-x-auto pb-2"
-                    style={{ scrollSnapType: "x proximity" }}
-                  >
-                    {project.shots.map((shot, i) => (
-                      <div
-                        key={shot.caption}
-                        className="shrink-0"
-                        style={{ width: "min(360px, 80%)", scrollSnapAlign: "start" }}
-                      >
-                        <ShotFrame seed={`${project.slug}-${i}`} caption={shot.caption} />
-                      </div>
-                    ))}
-                  </div>
-                </section>
+                <ScrollReveal>
+                  <section>
+                    <h2 className="ds-display-sm">Screenshots</h2>
+                    {/* Horizontally scrollable strip; each frame keeps a fixed width. */}
+                    <div
+                      className="mt-4 flex gap-5 overflow-x-auto pb-2"
+                      style={{ scrollSnapType: "x proximity" }}
+                    >
+                      {project.shots.map((shot, i) => (
+                        <div
+                          key={shot.caption}
+                          className="shrink-0"
+                          style={{ width: "min(360px, 80%)", scrollSnapAlign: "start" }}
+                        >
+                          <ShotFrame seed={`${project.slug}-${i}`} caption={shot.caption} />
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                </ScrollReveal>
               )}
 
               {project.outcome && project.outcome.length > 0 && (
                 <section>
-                  <h2 className="ds-display-sm">The outcome</h2>
+                  <ScrollReveal>
+                    <h2 className="ds-display-sm">The outcome</h2>
+                  </ScrollReveal>
                   <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
-                    {project.outcome.map((m) => (
-                      <div
-                        key={m.label}
-                        style={{
-                          padding: "18px 20px",
-                          border: "1px solid var(--color-hairline-strong)",
-                          borderRadius: "var(--radius-lg)",
-                          background: "var(--color-surface-card)",
-                        }}
-                      >
-                        <p style={{ fontWeight: 600, fontSize: 24, color: "var(--color-ink)" }}>{m.value}</p>
-                        <p className="ds-body" style={{ marginTop: 2, fontSize: 14 }}>
-                          {m.label}
-                        </p>
-                      </div>
+                    {project.outcome.map((m, i) => (
+                      <ScrollReveal key={m.label} delay={i * 0.08}>
+                        <div
+                          style={{
+                            padding: "18px 20px",
+                            border: "1px solid var(--color-hairline-strong)",
+                            borderRadius: "var(--radius-lg)",
+                            background: "var(--color-surface-card)",
+                          }}
+                        >
+                          <p style={{ fontWeight: 600, fontSize: 24, color: "var(--color-ink)" }}>{m.value}</p>
+                          <p className="ds-body" style={{ marginTop: 2, fontSize: 14 }}>
+                            {m.label}
+                          </p>
+                        </div>
+                      </ScrollReveal>
                     ))}
                   </div>
                 </section>

@@ -14,3 +14,13 @@
 
 .ds-card-hover { transition: box-shadow 140ms ease, border-color 140ms ease; }
 .ds-card-hover:hover { box-shadow: var(--shadow-soft-drop); border-color: var(--color-hairline-strong); }
+
+/* Cover Ken-Burns — the card's cover art gently zooms while the card is hovered.
+   Lives on a child so the card's own overflow:hidden crops the scale. */
+.ds-cover { transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1); will-change: transform; }
+.ds-card-hover:hover .ds-cover { transform: scale(1.06); }
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-cover { transition: none; }
+  .ds-card-hover:hover .ds-cover { transform: none; }
+}

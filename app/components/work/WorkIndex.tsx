@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { RevealItem, Stagger } from "@/app/components/ui";
 import {
   getActiveCategories,
@@ -16,6 +17,7 @@ import { ProjectCard } from "./ProjectCard";
  */
 export function WorkIndex() {
   const [filter, setFilter] = useState<ProjectFilter>("All");
+  const reduce = useReducedMotion();
   const categories = useMemo(() => getActiveCategories(), []);
 
   const visible = useMemo(
@@ -56,8 +58,8 @@ export function WorkIndex() {
                   role="tab"
                   aria-selected={active}
                   onClick={() => setFilter(c)}
-                  className="ds-card-hover"
                   style={{
+                    position: "relative",
                     padding: "6px 14px",
                     fontFamily: "var(--font-mono)",
                     fontSize: 13,
@@ -66,11 +68,34 @@ export function WorkIndex() {
                     borderRadius: "var(--radius-pill)",
                     border: "1px solid",
                     borderColor: active ? "var(--color-ink)" : "var(--color-hairline-strong)",
-                    background: active ? "var(--color-ink)" : "var(--color-surface-card)",
-                    color: active ? "var(--color-canvas)" : "var(--color-body)",
+                    background: "transparent",
+                    transition: "border-color 160ms ease, color 160ms ease",
                   }}
                 >
-                  {c}
+                  {/* Sliding active-pill indicator (shared layout) */}
+                  {active && (
+                    <motion.span
+                      layoutId="filterPill"
+                      aria-hidden
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        background: "var(--color-ink)",
+                        borderRadius: "var(--radius-pill)",
+                        zIndex: 0,
+                      }}
+                      transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 420, damping: 34 }}
+                    />
+                  )}
+                  <span
+                    style={{
+                      position: "relative",
+                      zIndex: 1,
+                      color: active ? "var(--color-canvas)" : "var(--color-body)",
+                    }}
+                  >
+                    {c}
+                  </span>
                 </button>
               );
             })}
@@ -90,9 +115,20 @@ export function WorkIndex() {
             sm:grid-cols-2 = 2-up on tablet, lg:grid-cols-3 = 3-up on desktop. */}
         {visible.length > 0 ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {visible.map((p) => (
-              <ProjectCard key={p.slug} project={p} />
-            ))}
+            <AnimatePresence mode="popLayout">
+              {visible.map((p) => (
+                <motion.div
+                  key={p.slug}
+                  layout={!reduce}
+                  initial={{ opacity: 0, scale: reduce ? 1 : 0.96 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: reduce ? 1 : 0.96 }}
+                  transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <ProjectCard project={p} />
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </div>
         ) : (
           <p

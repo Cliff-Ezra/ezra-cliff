@@ -10,6 +10,7 @@ export type { StatusTone } from "./StatusDot";
 export { ThemeToggle } from "./ThemeToggle";
 export { Wordmark } from "./Wordmark";
 export { Stagger, RevealItem } from "./Reveal";
+export { ScrollReveal } from "./ScrollReveal";
 export { ContactLinks } from "./ContactLinks";
 export { GithubMark, LinkedinMark } from "./BrandIcons";
 export { useTheme } from "./useTheme";

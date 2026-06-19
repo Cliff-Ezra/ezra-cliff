@@ -28,7 +28,7 @@ export function ProjectCard({ project }: { project: Project }) {
     >
       {/* Cover art (placeholder gradient — real screenshots land later) */}
       <Link href={detailHref} aria-label={`${project.name} — details`} className="block no-underline">
-        <div style={{ aspectRatio: "16 / 9", background: coverGradient(project.slug) }} />
+        <div className="ds-cover" style={{ aspectRatio: "16 / 9", background: coverGradient(project.slug) }} />
       </Link>
 
       {/* Body */}
