@@ -102,7 +102,7 @@ export function Readme() {
           <Button href="/work" variant="primary" size="md" style={{ fontFamily: "var(--font-mono)" }}>
             ./view-work
           </Button>
-          <Button href="/cv" variant="secondary" size="md" style={{ fontFamily: "var(--font-mono)" }}>
+          <Button href={site.cv} variant="secondary" size="md" style={{ fontFamily: "var(--font-mono)" }}>
             ./resume.pdf
           </Button>
         </div>
