@@ -1,0 +1,67 @@
+---
+title: Shipping a RAG pipeline for Kenyan law
+summary: How Law Guru grounds every answer in real statutes — and refuses to invent the ones it can't find.
+date: 2025-11-10
+category: AI
+tags: [rag, llama]
+featured: false
+draft: false
+cover: /images/writing/rag-pipeline-kenyan-law.jpg
+coverAlt: Abstract acrylic painting in warm red, purple and yellow
+---
+
+Ask a generic chatbot about Kenyan tenancy law and it will answer confidently,
+fluently, and often wrongly. For [Law Guru](/work/law-guru) a plausible-sounding
+hallucination isn't a quirk — it's malpractice. Every answer had to be grounded
+in actual law, with citations a user could verify.
+
+## The problem
+
+Legal text is dense, scattered across statutes and case law, and unforgiving of
+paraphrase. A model fine-tuned on general text has no reliable access to *which*
+section of *which* Act applies — so it guesses. Retrieval-augmented generation
+fixes the "where does this come from" problem by retrieving first and generating
+second.
+
+## Chunking the corpus
+
+Statutes don't chunk well on fixed token windows — you split a clause from its
+sub-clause and meaning evaporates. We chunk on legal structure instead: section,
+sub-section, paragraph.
+
+```python
+def chunk(act: Act) -> list[Chunk]:
+    return [
+        Chunk(text=s.body, cite=f"{act.title} s.{s.number}")
+        for s in act.sections
+    ]
+```
+
+Each chunk carries its citation, so retrieval and attribution are the same step.
+
+## Retrieve, then generate
+
+A query is embedded, the top-k chunks are pulled from the vector store, and only
+those are handed to the model — with a system prompt that forbids answering from
+outside the provided context.
+
+```python
+ctx = store.search(embed(question), k=6)
+answer = llama.generate(
+    system=GROUNDED_ONLY,   # "answer only from context; else say you can't"
+    context=ctx,
+    question=question,
+)
+```
+
+If the retriever comes back empty, the model is instructed to say so rather than
+improvise. A non-answer beats a confident wrong one.
+
+## Outcomes
+
+- **Every answer cited**, traceable back to the statute.
+- **Sub-3-second** median response.
+- Thousands of legal documents indexed and searchable.
+
+RAG didn't make the model smarter. It made it *honest* — which, for law, is the
+whole point.

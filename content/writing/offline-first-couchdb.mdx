@@ -1,0 +1,64 @@
+---
+title: Offline-first with CouchDB replication
+summary: Building a field app that works with no signal — and syncs cleanly the moment a connection returns.
+date: 2026-01-15
+category: Distributed Systems
+tags: [couchdb, sync]
+featured: false
+draft: false
+cover: /images/writing/offline-first-couchdb.jpg
+coverAlt: Abstract acrylic painting in red over deep blue
+---
+
+Case workers for [CPIMS](/work/cpims) register vulnerable children in places
+where connectivity is a rumour. The app couldn't *degrade* offline — it had to
+be **offline-first**, with the network as a bonus, not a requirement.
+
+## The problem
+
+Most apps treat the server as the source of truth and the device as a dumb
+cache. That model dies the moment the signal does: forms fail to submit, data is
+lost, and a worker in the field has no idea whether their last hour of work
+saved.
+
+## Local-first storage
+
+Each device runs a local PouchDB instance. Reads and writes hit the device
+first — instantly, always, signal or no signal.
+
+```js
+const db = new PouchDB("cases");
+
+await db.put({
+  _id: caseId,
+  child: { name, dob },
+  updatedAt: Date.now(),
+});
+```
+
+The UI never waits on the network. As far as the worker is concerned, the app is
+always online.
+
+## Conflict-safe replication
+
+When a connection returns, PouchDB replicates bidirectionally with a central
+CouchDB cluster. Conflicts are inevitable — two workers, one child, two
+edits — so we made resolution deterministic rather than last-write-wins.
+
+```js
+db.sync(remote, { live: true, retry: true })
+  .on("change", queueConflictCheck)
+  .on("error", scheduleBackoff);
+```
+
+CouchDB keeps every conflicting revision; a small reconciler picks a winner by
+domain rules (most recent *verified* visit) and records the rest for audit.
+
+## Outcomes
+
+- **100% offline-capable** — full workflow with zero signal.
+- **Conflict-safe** sync that never silently drops an edit.
+- Faster field follow-ups, because nothing blocks on the network.
+
+Offline-first isn't a feature you bolt on. It's a decision about where the truth
+lives — and we put it on the device.
