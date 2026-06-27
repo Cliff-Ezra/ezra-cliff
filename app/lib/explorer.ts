@@ -49,6 +49,7 @@ export const explorerTree: ExplorerNode[] = [
       { type: "file", name: "event-driven-ledger.md", href: "/writing/event-driven-ledger-in-go" },
       { type: "file", name: "offline-first-sync.md", href: "/writing/offline-first-couchdb" },
       { type: "file", name: "rag-kenyan-law.md", href: "/writing/rag-pipeline-kenyan-law" },
+      { type: "file", name: "grpc-over-rest.md", href: "/writing/grpc-over-rest-autopesa" },
     ],
   },
   { type: "file", name: "uses.md", href: "/uses" },

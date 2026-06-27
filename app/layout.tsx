@@ -17,7 +17,14 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+/** Absolute base for resolving OpenGraph / Twitter image URLs. Prefers an
+ * explicit site URL, falls back to the Vercel deployment URL, then localhost. */
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "Ezra Cliff Portfolio",
   description:
     "Ezra Cliff's personal website and portfolio, showcasing projects, writing, and more.",
