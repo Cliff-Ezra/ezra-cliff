@@ -1,0 +1,135 @@
+/* ============================================================
+   PROSE — long-form article body for /writing/[slug].
+   Token-driven vertical rhythm + code-block theming hooks for
+   rehype-pretty-code. Code surfaces stay dark in both themes
+   (brand rule — see colors.css), so a single dark code skin is used.
+   ============================================================ */
+
+.ds-prose {
+  color: var(--color-body);
+  font-size: var(--type-body-md-size);
+  line-height: 1.7;
+}
+
+/* Headings carry rehype-slug ids; scroll-margin lands anchor jumps below the
+   sticky nav. */
+.ds-prose-h,
+.ds-prose-h3 {
+  scroll-margin-top: calc(var(--nav-height) + 24px);
+}
+.ds-prose-h {
+  margin-top: 44px;
+  margin-bottom: 12px;
+}
+.ds-prose-h3 {
+  margin-top: 32px;
+  margin-bottom: 8px;
+  font-family: var(--font-sans);
+  font-weight: var(--weight-semibold);
+  font-size: 18px;
+  line-height: 1.4;
+  color: var(--color-ink);
+}
+.ds-prose > .ds-prose-h:first-child,
+.ds-prose > .ds-prose-h3:first-child {
+  margin-top: 0;
+}
+
+.ds-prose-p {
+  margin: 18px 0;
+}
+
+.ds-prose-list {
+  margin: 18px 0;
+  padding-left: 24px;
+  list-style: disc;
+}
+.ds-prose-list--ordered {
+  list-style: decimal;
+}
+.ds-prose-li {
+  margin: 6px 0;
+  line-height: 1.6;
+}
+
+.ds-prose-quote {
+  margin: 24px 0;
+  padding: 4px 18px;
+  border-left: 3px solid var(--color-hairline-strong);
+  color: var(--color-ink);
+  font-style: italic;
+}
+
+.ds-prose-hr {
+  margin: 36px 0;
+  border: none;
+  border-top: 1px solid var(--color-hairline-strong);
+}
+
+.ds-prose-a {
+  color: var(--color-text-link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Inline code — a small mono chip. Excludes code inside highlighted blocks. */
+.ds-prose-code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  background: var(--color-surface-strong);
+  color: var(--color-ink);
+}
+
+/* ---- rehype-pretty-code fenced blocks ---- */
+.ds-prose figure[data-rehype-pretty-code-figure] {
+  margin: 24px 0;
+}
+.ds-prose [data-rehype-pretty-code-title] {
+  padding: 8px 16px;
+  border: 1px solid var(--color-hairline-strong);
+  border-bottom: none;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: var(--color-surface-dark-elevated);
+  color: var(--color-on-dark-soft);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.ds-prose pre {
+  overflow-x: auto;
+  padding: 16px 0;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-dark);
+  border: 1px solid var(--color-hairline-strong);
+  font-family: var(--font-mono);
+  font-size: var(--type-code-size);
+  line-height: 1.6;
+}
+.ds-prose [data-rehype-pretty-code-title] + pre {
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  border-top: none;
+}
+/* Reset the inline-code chip styling when code sits inside a block. */
+.ds-prose pre code {
+  display: grid; /* enables full-width line highlights */
+  background: transparent;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+  counter-reset: line;
+}
+.ds-prose pre code [data-line] {
+  padding: 0 16px;
+}
+/* Highlighted lines / words (when ranges are used in a fence). */
+.ds-prose pre code [data-highlighted-line] {
+  background: rgba(255, 255, 255, 0.06);
+  border-left: 2px solid var(--color-text-link);
+  padding-left: 14px;
+}
+.ds-prose pre code [data-highlighted-chars] {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+  padding: 1px 2px;
+}

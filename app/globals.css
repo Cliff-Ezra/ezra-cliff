@@ -6,6 +6,7 @@
 @import "./styles/spacing.css";
 @import "./styles/shape.css";
 @import "./styles/interactions.css";
+@import "./styles/prose.css";
 
 /* Dark mode is driven by a [data-theme] attribute on <html>, not the
    media query, so the toggle can override the OS preference. */
