@@ -91,7 +91,7 @@
   border: 1px solid var(--color-hairline-strong);
   border-bottom: none;
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-  background: var(--color-surface-dark-elevated);
+  background: var(--color-surface-dark-elevated, #1a1a1a);
   color: var(--color-on-dark-soft);
   font-family: var(--font-mono);
   font-size: 12px;
@@ -100,7 +100,7 @@
   overflow-x: auto;
   padding: 16px 0;
   border-radius: var(--radius-lg);
-  background: var(--color-surface-dark);
+  background: var(--color-surface-dark, #171717);
   border: 1px solid var(--color-hairline-strong);
   font-family: var(--font-mono);
   font-size: var(--type-code-size);
