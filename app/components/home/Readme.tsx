@@ -4,27 +4,10 @@ import Link from "next/link";
 import { GitBranch, MapPin } from "lucide-react";
 import { Button, Icon, RevealItem, Stagger, StatusDot } from "@/app/components/ui";
 import { site } from "@/app/lib/site";
-
-/** "Jump to" shortcut cards under the intro. */
-const jumpTo = [
-  { file: "projects/", label: "Selected work", href: "/work" },
-  { file: "experience.json", label: "Where I've worked", href: "/experience" },
-  { file: "writing/", label: "Notes & essays", href: "/writing" },
-];
-
-/** Most-recent roles previewed on the home page (full list lives on /experience). */
-const experiencePreview = [
-  {
-    role: "Software Engineer — Health-E-Net",
-    detail: "ML inference review tooling · offline-first clinical data",
-    period: "2024–26",
-  },
-  {
-    role: "Software Engineer — USAID",
-    detail: "Flutter field apps, offline sync",
-    period: "2024",
-  },
-];
+import type { Project } from "@/app/lib/projects";
+import type { PostMeta } from "@/app/lib/writing";
+import { SelectedWork } from "./SelectedWork";
+import { LatestWriting } from "./LatestWriting";
 
 function MetaItem({ children }: { children: React.ReactNode }) {
   return (
@@ -45,12 +28,18 @@ function MetaItem({ children }: { children: React.ReactNode }) {
 
 /**
  * Readme — the home page's main pane, rendered as the README.md "open file".
- * Content blocks fade up in a one-time staggered cascade on load (Stagger +
- * RevealItem); reduced-motion users get an opacity-only fade.
+ * Intro + status + CTAs, then Selected work and Latest writing. Blocks fade up
+ * in a one-time staggered cascade (reduced-motion → opacity).
  */
-export function Readme() {
+export function Readme({
+  latestProjects,
+  latestPosts,
+}: {
+  latestProjects: Project[];
+  latestPosts: PostMeta[];
+}) {
   return (
-    <Stagger style={{ maxWidth: 760 }}>
+    <Stagger>
       {/* Terminal prompt */}
       <RevealItem>
         <p style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: "var(--color-success)" }}>
@@ -99,105 +88,26 @@ export function Readme() {
       {/* CTAs */}
       <RevealItem style={{ marginTop: 32 }}>
         <div className="flex flex-wrap gap-3">
-          <Button href="/work" variant="primary" size="md" style={{ fontFamily: "var(--font-mono)" }}>
-            ./view-work
+          <Button href="/work" variant="primary" size="md">
+            View my work
           </Button>
-          <Button href={site.cv} variant="secondary" size="md" style={{ fontFamily: "var(--font-mono)" }}>
-            ./resume.pdf
+          <Button href="/about" variant="secondary" size="md">
+            About me
           </Button>
         </div>
       </RevealItem>
 
-      {/* Jump to */}
-      <RevealItem style={{ marginTop: 48 }}>
-        <section>
-          <p className="ds-caption-uppercase">Jump to</p>
-          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-            {jumpTo.map((j) => (
-              <Link
-                key={j.href}
-                href={j.href}
-                className="ds-card-hover no-underline"
-                style={{
-                  display: "block",
-                  padding: "16px 18px",
-                  border: "1px solid var(--color-hairline-strong)",
-                  borderRadius: "var(--radius-lg)",
-                  background: "var(--color-surface-card)",
-                }}
-              >
-                <span style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: "var(--color-text-link)" }}>
-                  {j.file}
-                </span>
-                <span
-                  style={{
-                    display: "block",
-                    marginTop: 6,
-                    fontWeight: 600,
-                    color: "var(--color-ink)",
-                  }}
-                >
-                  {j.label} →
-                </span>
-              </Link>
-            ))}
-          </div>
-        </section>
+      {/* Selected work */}
+      <RevealItem style={{ marginTop: 64 }}>
+        <SelectedWork projects={latestProjects} />
       </RevealItem>
 
-      {/* Experience preview */}
-      <RevealItem style={{ marginTop: 48 }}>
-        <section>
-          <p style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--color-muted)" }}>
-            {"// experience.json — preview"}
-          </p>
-          <div
-            className="mt-4"
-            style={{
-              border: "1px solid var(--color-hairline-strong)",
-              borderRadius: "var(--radius-lg)",
-              background: "var(--color-surface-card)",
-              overflow: "hidden",
-            }}
-          >
-            {experiencePreview.map((e, i) => (
-              <div
-                key={e.role}
-                className="flex items-baseline justify-between gap-4"
-                style={{
-                  padding: "16px 18px",
-                  borderTop: i === 0 ? "none" : "1px solid var(--color-hairline)",
-                }}
-              >
-                <div style={{ minWidth: 0 }}>
-                  <p style={{ fontWeight: 600, color: "var(--color-ink)" }}>{e.role}</p>
-                  <p className="ds-body" style={{ marginTop: 2, fontSize: 14 }}>
-                    {e.detail}
-                  </p>
-                </div>
-                <span style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: "var(--color-muted)", whiteSpace: "nowrap" }}>
-                  {e.period}
-                </span>
-              </div>
-            ))}
-            <Link
-              href="/experience"
-              className="no-underline"
-              style={{
-                display: "block",
-                padding: "12px 18px",
-                borderTop: "1px solid var(--color-hairline)",
-                textAlign: "center",
-                fontFamily: "var(--font-mono)",
-                fontSize: 13,
-                color: "var(--color-text-link)",
-              }}
-            >
-              open full timeline →
-            </Link>
-          </div>
-        </section>
-      </RevealItem>
+      {/* Latest writing */}
+      {latestPosts.length > 0 && (
+        <RevealItem style={{ marginTop: 56 }}>
+          <LatestWriting posts={latestPosts} />
+        </RevealItem>
+      )}
     </Stagger>
   );
 }
