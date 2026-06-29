@@ -3,7 +3,7 @@
 import { useState, type ReactNode } from "react";
 import { TopNav } from "./TopNav";
 import { StatusBar } from "./StatusBar";
-import { MobileNav } from "./MobileNav";
+import { MobileDrawer } from "./MobileDrawer";
 
 export function HomeShell({ children }: { children: ReactNode }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -18,24 +18,7 @@ export function HomeShell({ children }: { children: ReactNode }) {
 
       <StatusBar />
 
-      {/* Mobile slide-in nav */}
-      {drawerOpen && (
-        <div className="fixed inset-0 z-50 md:hidden" role="dialog" aria-modal="true">
-          <button
-            type="button"
-            aria-label="Close menu"
-            onClick={() => setDrawerOpen(false)}
-            className="absolute inset-0"
-            style={{ background: "rgba(23,23,23,0.35)", backdropFilter: "blur(2px)", border: "none" }}
-          />
-          <div
-            className="absolute inset-y-0 left-0 w-[82%] max-w-[320px]"
-            style={{ boxShadow: "var(--shadow-soft-drop)" }}
-          >
-            <MobileNav onClose={() => setDrawerOpen(false)} />
-          </div>
-        </div>
-      )}
+      <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
     </div>
   );
 }

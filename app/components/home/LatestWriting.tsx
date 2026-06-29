@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { RevealItem, Stagger } from "@/app/components/ui";
 import { coverGradient } from "@/app/lib/cover";
 import { formatMonthYear } from "@/app/lib/format-date";
 import type { PostMeta } from "@/app/lib/writing";
@@ -33,11 +34,12 @@ export function LatestWriting({ posts }: { posts: PostMeta[] }) {
         </Link>
       </header>
 
-      <div className="mt-5 grid gap-4 md:grid-cols-2">
+      <Stagger inView stagger={0.1} className="mt-5 grid gap-4 md:grid-cols-2">
         {/* Featured (newest) */}
+        <RevealItem y={24} scale={0.96}>
         <Link
           href={`/writing/${featured.slug}`}
-          className="ds-card-hover no-underline flex flex-col overflow-hidden sm:flex-row md:flex-col"
+          className="ds-card-hover no-underline flex h-full flex-col overflow-hidden sm:flex-row md:flex-col"
           style={{
             border: "1px solid var(--color-hairline-strong)",
             borderRadius: "var(--radius-lg)",
@@ -69,9 +71,11 @@ export function LatestWriting({ posts }: { posts: PostMeta[] }) {
             </p>
           </div>
         </Link>
+        </RevealItem>
 
         {/* Two compact rows */}
-        <div className="flex flex-col gap-4">
+        <RevealItem y={24} scale={0.96}>
+        <div className="flex h-full flex-col gap-4">
           {others.map((post) => (
             <Link
               key={post.slug}
@@ -106,7 +110,8 @@ export function LatestWriting({ posts }: { posts: PostMeta[] }) {
             </Link>
           ))}
         </div>
-      </div>
+        </RevealItem>
+      </Stagger>
     </section>
   );
 }

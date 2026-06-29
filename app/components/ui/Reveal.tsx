@@ -22,19 +22,27 @@ export function Stagger({
   style,
   stagger = 0.08,
   delayChildren = 0.05,
+  inView = false,
 }: {
   children: ReactNode;
   className?: string;
   style?: CSSProperties;
   stagger?: number;
   delayChildren?: number;
+  /** Trigger when the group scrolls into view (once) instead of on mount —
+   * use for below-the-fold sections so the cascade is actually seen. */
+  inView?: boolean;
 }) {
+  const trigger = inView
+    ? ({ whileInView: "show", viewport: { once: true, margin: "-60px" } } as const)
+    : ({ animate: "show" } as const);
+
   return (
     <motion.div
       className={className}
       style={style}
       initial="hidden"
-      animate="show"
+      {...trigger}
       variants={{
         hidden: {},
         show: { transition: { staggerChildren: stagger, delayChildren } },
@@ -50,16 +58,19 @@ export function RevealItem({
   className,
   style,
   y = 10,
+  scale,
 }: {
   children: ReactNode;
   className?: string;
   style?: CSSProperties;
   y?: number;
+  /** Optional initial scale (e.g. 0.97) for a subtle "pop" as it settles. */
+  scale?: number;
 }) {
   const reduce = useReducedMotion();
   const variants: Variants = {
-    hidden: { opacity: 0, y: reduce ? 0 : y },
-    show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+    hidden: { opacity: 0, y: reduce ? 0 : y, scale: reduce ? 1 : scale ?? 1 },
+    show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
   };
   return (
     <motion.div className={className} style={style} variants={variants}>

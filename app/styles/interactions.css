@@ -21,8 +21,12 @@
 }
 .ds-field::placeholder { color: var(--color-muted-soft); }
 
-.ds-card-hover { transition: box-shadow 140ms ease, border-color 140ms ease; }
-.ds-card-hover:hover { box-shadow: var(--shadow-soft-drop); border-color: var(--color-hairline-strong); }
+.ds-card-hover { transition: box-shadow 140ms ease, border-color 140ms ease, transform 140ms ease; }
+.ds-card-hover:hover {
+  box-shadow: var(--shadow-soft-drop);
+  border-color: var(--color-hairline-strong);
+  transform: translateY(-2px);
+}
 
 /* Cover Ken-Burns — the card's cover art gently zooms while the card is hovered.
    Lives on a child so the card's own overflow:hidden crops the scale. */
@@ -32,4 +36,6 @@
 @media (prefers-reduced-motion: reduce) {
   .ds-cover { transition: none; }
   .ds-card-hover:hover .ds-cover { transform: none; }
+  .ds-card-hover { transition: box-shadow 140ms ease, border-color 140ms ease; }
+  .ds-card-hover:hover { transform: none; }
 }

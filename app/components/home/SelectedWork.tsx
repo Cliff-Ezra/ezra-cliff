@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { RevealItem, Stagger } from "@/app/components/ui";
 import { coverGradient } from "@/app/lib/cover";
 import type { Project } from "@/app/lib/projects";
 
@@ -27,32 +28,38 @@ export function SelectedWork({ projects }: { projects: Project[] }) {
   return (
     <section>
       <SectionHead title="Selected work" allHref="/work" allLabel="All projects" />
-      {/* Compact rows on mobile (less scroll); cover cards on sm+. */}
-      <div className="mt-5 grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {/* Compact rows on mobile (less scroll); cover cards on sm+.
+          Cards cascade in as the section scrolls into view. */}
+      <Stagger
+        inView
+        stagger={0.1}
+        className="mt-5 grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         {projects.map((p) => (
-          <Link
-            key={p.slug}
-            href={`/work/${p.slug}`}
-            className="ds-card-hover no-underline flex flex-row items-center overflow-hidden sm:flex-col sm:items-stretch"
-            style={{
-              border: "1px solid var(--color-hairline-strong)",
-              borderRadius: "var(--radius-lg)",
-              background: "var(--color-surface-card)",
-            }}
-          >
-            <div
-              className="ds-cover h-20 w-20 shrink-0 sm:h-auto sm:w-full sm:aspect-video"
-              style={{ background: coverGradient(p.slug) }}
-            />
-            <div className="min-w-0" style={{ padding: "12px 14px" }}>
-              <h3 style={{ fontWeight: 600, fontSize: 16, color: "var(--color-ink)" }}>{p.name}</h3>
-              <p className="ds-body truncate" style={{ marginTop: 3, fontSize: 13.5 }}>
-                {p.tagline ?? p.summary}
-              </p>
-            </div>
-          </Link>
+          <RevealItem key={p.slug} y={24} scale={0.96}>
+            <Link
+              href={`/work/${p.slug}`}
+              className="ds-card-hover no-underline flex h-full flex-row items-center overflow-hidden sm:flex-col sm:items-stretch"
+              style={{
+                border: "1px solid var(--color-hairline-strong)",
+                borderRadius: "var(--radius-lg)",
+                background: "var(--color-surface-card)",
+              }}
+            >
+              <div
+                className="ds-cover h-20 w-20 shrink-0 sm:h-auto sm:w-full sm:aspect-video"
+                style={{ background: coverGradient(p.slug) }}
+              />
+              <div className="min-w-0" style={{ padding: "12px 14px" }}>
+                <h3 style={{ fontWeight: 600, fontSize: 16, color: "var(--color-ink)" }}>{p.name}</h3>
+                <p className="ds-body truncate" style={{ marginTop: 3, fontSize: 13.5 }}>
+                  {p.tagline ?? p.summary}
+                </p>
+              </div>
+            </Link>
+          </RevealItem>
         ))}
-      </div>
+      </Stagger>
     </section>
   );
 }

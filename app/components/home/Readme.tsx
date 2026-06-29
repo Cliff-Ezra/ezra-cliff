@@ -39,7 +39,8 @@ export function Readme({
   latestPosts: PostMeta[];
 }) {
   return (
-    <Stagger>
+    <>
+      <Stagger>
       {/* Terminal prompt */}
       <RevealItem>
         <p style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: "var(--color-success)" }}>
@@ -96,18 +97,19 @@ export function Readme({
           </Button>
         </div>
       </RevealItem>
+      </Stagger>
 
-      {/* Selected work */}
-      <RevealItem style={{ marginTop: 64 }}>
+      {/* Selected work — cascades in on scroll */}
+      <div style={{ marginTop: 64 }}>
         <SelectedWork projects={latestProjects} />
-      </RevealItem>
+      </div>
 
-      {/* Latest writing */}
+      {/* Latest writing — cascades in on scroll */}
       {latestPosts.length > 0 && (
-        <RevealItem style={{ marginTop: 56 }}>
+        <div style={{ marginTop: 56 }}>
           <LatestWriting posts={latestPosts} />
-        </RevealItem>
+        </div>
       )}
-    </Stagger>
+    </>
   );
 }

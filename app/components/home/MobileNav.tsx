@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { X } from "lucide-react";
-import { ContactLinks, Icon, Wordmark } from "@/app/components/ui";
+import { ContactLinks, Icon, RevealItem, Stagger, Wordmark } from "@/app/components/ui";
 import { contactHref, navLinks, site } from "@/app/lib/site";
 
 export function MobileNav({ onClose }: { onClose: () => void }) {
@@ -44,27 +44,28 @@ export function MobileNav({ onClose }: { onClose: () => void }) {
         </button>
       </div>
 
-      {/* Section links */}
-      <div className="mt-4 flex flex-col">
+      {/* Section links — cascade in after the panel slides */}
+      <Stagger className="mt-4 flex flex-col" stagger={0.05} delayChildren={0.12}>
         {links.map((l) => (
-          <Link
-            key={l.href}
-            href={l.href}
-            onClick={onClose}
-            className="no-underline transition-colors hover:bg-surface-strong"
-            style={{
-              display: "block",
-              padding: "14px 8px",
-              borderRadius: "var(--radius-md)",
-              fontSize: 18,
-              fontWeight: 600,
-              color: "var(--color-ink)",
-            }}
-          >
-            {l.label}
-          </Link>
+          <RevealItem key={l.href} y={8}>
+            <Link
+              href={l.href}
+              onClick={onClose}
+              className="no-underline transition-colors hover:bg-surface-strong"
+              style={{
+                display: "block",
+                padding: "14px 8px",
+                borderRadius: "var(--radius-md)",
+                fontSize: 18,
+                fontWeight: 600,
+                color: "var(--color-ink)",
+              }}
+            >
+              {l.label}
+            </Link>
+          </RevealItem>
         ))}
-      </div>
+      </Stagger>
 
       {/* Social pinned to the bottom */}
       <div
