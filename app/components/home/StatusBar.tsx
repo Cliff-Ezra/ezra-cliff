@@ -1,15 +1,9 @@
-"use client";
-
 import { GitBranch } from "lucide-react";
-import { ContactLinks, Icon, StatusDot, ThemeToggle, useTheme } from "@/app/components/ui";
+import { ContactLinks, Icon, StatusDot } from "@/app/components/ui";
 import { site } from "@/app/lib/site";
 
-/**
- * Mirrors an editor status line: branch · online · contact links on the left,
- * encoding + theme switch on the right.
- */
 export function StatusBar() {
-  const { theme } = useTheme();
+  const year = new Date().getFullYear();
 
   const itemStyle: React.CSSProperties = {
     display: "inline-flex",
@@ -41,11 +35,9 @@ export function StatusBar() {
         <ContactLinks size={14} gap={10} />
 
         <div className="ml-auto flex items-center gap-4">
-          <span style={itemStyle} className="hidden sm:inline-flex">
-            UTF-8
+          <span style={itemStyle} suppressHydrationWarning>
+            © {year} {site.shortName}
           </span>
-          <span style={itemStyle}>{theme}</span>
-          <ThemeToggle compact />
         </div>
       </div>
     </footer>
