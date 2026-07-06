@@ -6,6 +6,27 @@ Version format: `v0.MINOR.PATCH`
 
 ---
 
+## v0.7.1 — Bio Copy + Experience Timeline Refinement (6 July 2026)
+
+**Branch:** `about` → PR #9 → `staging`
+
+### Components
+- `ExperienceTimeline` now renders each role's details as discipline-labelled
+  bullet groups (label-less groups still render flat)
+
+### Data
+- Remodelled `experience.ts` details as grouped `DetailGroup[]` and repopulated
+  the content from the role-specific CVs
+- Discipline labels per role: Health-E-Net → Frontend · Backend · Data & BI ·
+  AI/ML; USAID → Frontend · Backend; Veritas → Frontend · Backend · DevOps / CI
+
+### Content
+- Rewrote the home-page and About bios to convey end-to-end breadth — in-browser
+  ML, offline-first apps, distributed Go/Laravel backends, and data pipelines
+- Swapped the CV for the full-stack résumé and updated `site.cv`
+
+---
+
 ## v0.7.0 — Homepage Redesign + Mobile Navigation (29 June 2026)
 
 **Branch:** `homepage` → PR #8 → `staging`
