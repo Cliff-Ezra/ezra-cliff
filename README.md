@@ -5,7 +5,7 @@ The personal site & portfolio of **Ezra Cliff Esau**, a full-stack engineer base
 🔗 **Live:** [ezra-cliff.vercel.app](https://ezra-cliff.vercel.app)
 
 <p align="center">
-  <img src="public/images/homepage.png" alt="ezra.cliff() home page" width="780" style="border-radius:12px;border:1px solid #eaeaea"/>
+  <img src="public/images/docs/homepage.png" alt="ezra.cliff() home page" width="780" style="border-radius:12px;border:1px solid #eaeaea"/>
 </p>
 
 ---
