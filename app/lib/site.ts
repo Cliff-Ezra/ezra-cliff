@@ -18,7 +18,7 @@ export const site = {
   linkedinLabel: "/in/cliff-ezra",
   email: "cliffezra212@gmail.com",
   phone: "+254 715 078 401",
-  cv: "/documents/cliff-ezra-esau-cv.pdf",
+  cv: "/documents/ezra-cliff-esau-full-stack-cv.pdf",
   /** Repo / project label used in the explorer + prompt (matches the domain). */
   repo: "ezra-cliff",
   promptUser: "ezra",
