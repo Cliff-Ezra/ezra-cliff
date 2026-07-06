@@ -59,11 +59,12 @@ export function Readme({
       {/* Bio */}
       <RevealItem style={{ marginTop: 18 }}>
         <p className="ds-body" style={{ maxWidth: 600, fontSize: 17 }}>
-          Full-stack engineer, 5 years. I build scalable distributed systems across
-          web &amp; mobile — Go, Next.js, Laravel, Flutter, plus ML-integrated
-          pipelines. I enjoy architecting scalable distributed systems, designing
-          performant database schemas, and shipping production-ready products
-          across web and mobile platforms.
+          Full-stack engineer, 5 years, shipping end-to-end — in-browser ML and
+          offline-first PWAs on the frontend, Go, Node, Laravel and GraphQL on the
+          backend, and the streaming ETL and BI warehouses behind the dashboards.
+          I build for real-world constraints: multi-tenant health systems,
+          government field apps and fintech, mostly where connectivity isn&apos;t a
+          given.
         </p>
       </RevealItem>
 
