@@ -86,9 +86,10 @@ export function AboutPage() {
           {/* Right: bio */}
           <p className="ds-body" style={{ fontSize: 17, color: "var(--color-body)" }}>
             I write software that helps people do real things — move money safely,
-            access justice, get healthcare. Five years of backend-heavy, full-stack
-            work across Go, Laravel, Next.js and Flutter, mostly on the continent,
-            mostly for people for whom connectivity isn&apos;t a given.
+            access justice, get healthcare. Five years across the whole stack:
+            in-browser ML and offline-first apps, distributed Go and Laravel
+            backends, and the data pipelines behind the reporting. Mostly on the
+            continent, mostly for people for whom connectivity isn&apos;t a given.
           </p>
         </div>
       </RevealItem>
@@ -97,14 +98,6 @@ export function AboutPage() {
       <RevealItem style={{ marginTop: 44 }}>
         <div className="flex items-baseline justify-between gap-4">
           <h2 className="ds-display-sm">Experience</h2>
-          <a
-            href={site.cv}
-            download="Cliff-Ezra-Esau-CV.pdf"
-            className="no-underline"
-            style={{ fontFamily: "var(--font-mono)", fontSize: 13, color: "var(--color-text-link)" }}
-          >
-            résumé.pdf ↓
-          </a>
         </div>
       </RevealItem>
       <RevealItem style={{ marginTop: 22 }}>

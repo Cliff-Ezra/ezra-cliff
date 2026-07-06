@@ -91,23 +91,34 @@ function RoleItem({ role, last }: { role: Role; last: boolean }) {
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
             style={{ overflow: "hidden" }}
           >
-            <ul style={{ margin: "12px 0 0", padding: 0, listStyle: "none", maxWidth: 640 }}>
-              {role.details.map((d) => (
-                <li
-                  key={d}
-                  className="ds-body"
-                  style={{ position: "relative", paddingLeft: 16, marginTop: 8, fontSize: 14 }}
-                >
-                  <span
-                    aria-hidden
-                    style={{ position: "absolute", left: 0, color: "var(--color-muted)" }}
-                  >
-                    –
-                  </span>
-                  {d}
-                </li>
+            <div style={{ maxWidth: 640 }}>
+              {role.details.map((group, gi) => (
+                <div key={group.label ?? gi} style={{ marginTop: gi === 0 ? 12 : 16 }}>
+                  {group.label && (
+                    <p className="ds-caption-uppercase" style={{ marginBottom: 4 }}>
+                      {group.label}
+                    </p>
+                  )}
+                  <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
+                    {group.items.map((d) => (
+                      <li
+                        key={d}
+                        className="ds-body"
+                        style={{ position: "relative", paddingLeft: 16, marginTop: 8, fontSize: 14 }}
+                      >
+                        <span
+                          aria-hidden
+                          style={{ position: "absolute", left: 0, color: "var(--color-muted)" }}
+                        >
+                          –
+                        </span>
+                        {d}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               ))}
-            </ul>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
