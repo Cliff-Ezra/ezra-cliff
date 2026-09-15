@@ -87,7 +87,7 @@ export function AboutPage() {
           <p className="ds-body" style={{ fontSize: 17, color: "var(--color-body)" }}>
             I write software that helps people do real things — move money safely,
             access justice, get healthcare. Five years across the whole stack:
-            in-browser ML and offline-first apps, distributed Go and Laravel
+            in-browser ML and offline-first apps, distributed Go, Elixir and Laravel
             backends, and the data pipelines behind the reporting. Mostly on the
             continent, mostly for people for whom connectivity isn&apos;t a given.
           </p>
