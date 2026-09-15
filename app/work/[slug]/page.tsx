@@ -4,6 +4,7 @@ import GhostHero from "@/app/components/coming-soon/GhostHero";
 import { WorkShell } from "@/app/components/work/WorkShell";
 import { ProjectDetail } from "@/app/components/work/ProjectDetail";
 import { getProject, projects } from "@/app/lib/projects";
+import { showComingSoon } from "@/app/lib/siteMode";
 
 /** Pre-render a detail page for every known project slug. */
 export function generateStaticParams() {
@@ -26,15 +27,14 @@ export async function generateMetadata({
 
 /**
  * /work/[slug] — a project's detail page. Gated by the same
- * NEXT_PUBLIC_SITE_MODE flag as the rest of the site; unknown slugs 404.
+ * showComingSoon flag as the rest of the site; unknown slugs 404.
  */
 export default async function ProjectRoute({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const isLive = process.env.NEXT_PUBLIC_SITE_MODE === "staging";
-  if (!isLive) return <GhostHero />;
+  if (showComingSoon) return <GhostHero />;
 
   const { slug } = await params;
   const project = getProject(slug);

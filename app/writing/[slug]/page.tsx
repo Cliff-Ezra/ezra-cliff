@@ -4,6 +4,7 @@ import GhostHero from "@/app/components/coming-soon/GhostHero";
 import { WritingShell } from "@/app/components/writing/WritingShell";
 import { ArticleView } from "@/app/components/writing/ArticleView";
 import { extractToc, getAllPosts, getPost } from "@/app/lib/writing";
+import { showComingSoon } from "@/app/lib/siteMode";
 
 /** Pre-render a page for every known post slug. */
 export function generateStaticParams() {
@@ -32,15 +33,14 @@ export async function generateMetadata({
 
 /**
  * /writing/[slug] — a post's article page. Gated by the same
- * NEXT_PUBLIC_SITE_MODE flag as the rest of the site; unknown slugs 404.
+ * showComingSoon flag as the rest of the site; unknown slugs 404.
  */
 export default async function PostRoute({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const isLive = process.env.NEXT_PUBLIC_SITE_MODE === "staging";
-  if (!isLive) return <GhostHero />;
+  if (showComingSoon) return <GhostHero />;
 
   const { slug } = await params;
   const post = getPost(slug);

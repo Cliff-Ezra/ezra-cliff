@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import GhostHero from "@/app/components/coming-soon/GhostHero";
 import { PageShell } from "@/app/components/layout/PageShell";
 import { ContactPage } from "@/app/components/contact/ContactPage";
+import { showComingSoon } from "@/app/lib/siteMode";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -10,8 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default function ContactRoute() {
-  const isLive = process.env.NEXT_PUBLIC_SITE_MODE === "staging";
-  if (!isLive) return <GhostHero />;
+  if (showComingSoon) return <GhostHero />;
 
   return (
     <PageShell>

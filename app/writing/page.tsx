@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import GhostHero from "@/app/components/coming-soon/GhostHero";
 import { WritingShell } from "@/app/components/writing/WritingShell";
 import { WritingIndex } from "@/app/components/writing/WritingIndex";
+import { showComingSoon } from "@/app/lib/siteMode";
 import { getActiveWritingCategories, getAllPosts, getFeaturedPost } from "@/app/lib/writing";
 
 export const metadata: Metadata = {
@@ -11,8 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default function WritingRoute() {
-  const isLive = process.env.NEXT_PUBLIC_SITE_MODE === "staging";
-  if (!isLive) return <GhostHero />;
+  if (showComingSoon) return <GhostHero />;
 
   const posts = getAllPosts();
   const categories = getActiveWritingCategories();
