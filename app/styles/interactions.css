@@ -1,0 +1,41 @@
+/* ============================================================
+   INTERACTIONS — restrained hover/press. Black CTA darkens to
+   primary-active, secondary tints to surface-strong, text-links
+   underline. Cards lift the single soft drop shadow.
+   ============================================================ */
+
+.ds-btn--primary:hover:not([aria-disabled="true"]) { background: var(--color-primary-active); }
+.ds-btn--primary:active:not([aria-disabled="true"]) { background: var(--color-primary-active); transform: translateY(0.5px); }
+
+.ds-btn--secondary:hover:not([aria-disabled="true"]) { background: var(--color-surface-strong); }
+.ds-btn--secondary:active:not([aria-disabled="true"]) { background: var(--color-surface-strong); transform: translateY(0.5px); }
+
+.ds-btn--tertiary-text:hover:not([aria-disabled="true"]) { text-decoration: underline; }
+
+/* Form fields — inline outline:none is replaced by an accessible focus border
+   plus a soft ink ring. */
+.ds-field { transition: border-color 120ms ease, box-shadow 120ms ease; }
+.ds-field:focus {
+  border-color: var(--color-ink);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-ink) 10%, transparent);
+}
+.ds-field::placeholder { color: var(--color-muted-soft); }
+
+.ds-card-hover { transition: box-shadow 140ms ease, border-color 140ms ease, transform 140ms ease; }
+.ds-card-hover:hover {
+  box-shadow: var(--shadow-soft-drop);
+  border-color: var(--color-hairline-strong);
+  transform: translateY(-2px);
+}
+
+/* Cover Ken-Burns — the card's cover art gently zooms while the card is hovered.
+   Lives on a child so the card's own overflow:hidden crops the scale. */
+.ds-cover { transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1); will-change: transform; }
+.ds-card-hover:hover .ds-cover { transform: scale(1.06); }
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-cover { transition: none; }
+  .ds-card-hover:hover .ds-cover { transform: none; }
+  .ds-card-hover { transition: box-shadow 140ms ease, border-color 140ms ease; }
+  .ds-card-hover:hover { transform: none; }
+}

@@ -1,0 +1,89 @@
+---
+title: Designing an event-driven ledger in Go
+summary: Hexagonal architecture, the repository pattern, and why typed gRPC internals paid off.
+date: 2026-03-01
+category: Architecture
+tags: [go, grpc]
+featured: true
+draft: false
+cover: /images/writing/event-driven-ledger-in-go.jpg
+coverAlt: Abstract acrylic painting in blue, yellow and red
+---
+
+Most financial systems are built around the database. A record is an update to a
+row — readable, writable, forgettable. That works until someone asks the one
+question every ledger eventually faces: *how did this balance get here?*
+
+For [AutoPesa](/work/autopesa) the answer had to be airtight. So instead of
+storing balances, we stored the events that produce them — and rebuilt the rest.
+
+## The problem
+
+A row that can be updated is a row that can be wrong. When a balance is just a
+number in a column, an off-by-one in any code path silently corrupts the truth,
+and there is no way to prove what the balance *should* have been.
+
+We needed a record that was append-only, ordered, and replayable — a financial
+diary nobody could quietly edit.
+
+## The architecture
+
+The system is organised hexagonally: the domain core knows nothing about
+Postgres, gRPC, or HTTP. Ports describe what the core needs; adapters supply it.
+
+```go
+type Event struct {
+	ID        string
+	Kind      string
+	Amount    int64 // minor units, never floats
+	CreatedAt time.Time
+}
+
+type Ledger interface {
+	Commit(ctx context.Context, e Event) error
+	Replay(ctx context.Context, account string) (Balance, error)
+}
+```
+
+The core depends only on that interface. Swapping Postgres for an in-memory
+store in tests is a one-line change, and the domain logic never notices.
+
+## The event store
+
+Every mutation is an `INSERT`. There are no `UPDATE`s on the ledger table — the
+balance is a *projection*, folded from the event stream on read (and cached).
+
+```go
+func (l *pgLedger) Replay(ctx context.Context, acct string) (Balance, error) {
+	rows, err := l.q.EventsByAccount(ctx, acct)
+	if err != nil {
+		return 0, err
+	}
+	var bal Balance
+	for _, e := range rows {
+		bal = bal.Apply(e) // pure function, fully testable
+	}
+	return bal, nil
+}
+```
+
+Because `Apply` is pure, the entire balance history is a property test away from
+being verified.
+
+## gRPC internals
+
+Services talk over gRPC with generated, typed stubs. The win isn't speed — it's
+that an invalid message can't be constructed. The wire contract and the Go types
+are the same source of truth, so a renamed field is a compile error, not a
+3am incident.
+
+> Typed internal comms turned a class of runtime bugs into build failures.
+
+## Outcomes
+
+- **~40% faster** dashboard loads from cached projections.
+- A **tamper-evident** ledger: the history is the source of truth.
+- **100% typed** service-to-service communication.
+
+The lesson that stuck: model the *events*, not the *state*. State is just the
+latest replay.

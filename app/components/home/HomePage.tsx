@@ -1,7 +1,15 @@
+import { HomeShell } from "./HomeShell";
+import { Readme } from "./Readme";
+import { projects } from "@/app/lib/projects";
+import { getAllPosts } from "@/app/lib/writing";
+
 export default function HomePage() {
+  const latestProjects = projects.slice(0, 3);
+  const latestPosts = getAllPosts().slice(0, 3);
+
   return (
-    <main>
-      <h1>Portfolio — Home Page</h1>
-    </main>
+    <HomeShell>
+      <Readme latestProjects={latestProjects} latestPosts={latestPosts} />
+    </HomeShell>
   );
 }

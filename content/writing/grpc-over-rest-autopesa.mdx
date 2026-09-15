@@ -1,0 +1,74 @@
+---
+title: Why I chose gRPC over REST for AutoPesa
+summary: Typed contracts, streaming, and the quiet bugs that disappear when the wire format can't lie.
+date: 2025-09-05
+category: APIs
+tags: [grpc, go]
+featured: false
+draft: false
+cover: /images/writing/grpc-over-rest-autopesa.jpg
+coverAlt: Abstract acrylic painting in teal and blue
+---
+
+REST is the default, and defaults are comfortable. But for the services behind
+[AutoPesa](/work/autopesa) — money moving between processes — comfortable wasn't
+the bar. Correctness was. gRPC won on one argument: the contract is the code.
+
+## The problem with stringly-typed APIs
+
+A JSON REST endpoint is a promise written in prose. The server *says* it returns
+`amount` as an integer in minor units; the client *hopes* it does. Nothing
+enforces it, so the gap is filled with validation code, defensive parsing, and
+the occasional production incident when someone sends `"1000"` instead of `1000`.
+
+## One schema, two languages
+
+With protobufs the schema is authoritative and both sides generate from it.
+
+```proto
+message Transaction {
+  string id = 1;
+  int64  amount = 2; // minor units — no floats, ever
+  Kind   kind = 3;
+}
+
+service Ledger {
+  rpc Commit(Transaction) returns (Receipt);
+}
+```
+
+Rename `amount` and every consumer fails to *compile*. The class of "the client
+and server disagree about the shape" bug simply stops existing.
+
+## Streaming for free
+
+The dashboard needs a live transaction feed. Over REST that's polling or a
+bolted-on WebSocket. Over gRPC it's a server-streaming method — same contract,
+same codegen.
+
+```go
+func (s *server) Watch(req *WatchReq, stream Ledger_WatchServer) error {
+	for tx := range s.feed.Subscribe(req.Account) {
+		if err := stream.Send(tx); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+```
+
+## When REST still wins
+
+gRPC isn't free. Browsers need a proxy (gRPC-Web), tooling is heavier, and
+debugging a binary payload is less pleasant than `curl`. For the *public* API we
+kept REST. gRPC earned its place strictly *between* our own services, where both
+ends are ours and the contract is worth enforcing.
+
+## Outcomes
+
+- **100% typed** internal communication.
+- Live streaming with no extra transport.
+- Whole categories of integration bugs turned into compile errors.
+
+Pick gRPC when both ends are yours and the cost of disagreement is high. For
+AutoPesa, that was every internal hop.
