@@ -60,7 +60,7 @@ export function Readme({
       <RevealItem style={{ marginTop: 18 }}>
         <p className="ds-body" style={{ maxWidth: 600, fontSize: 17 }}>
           Full-stack engineer, 5 years, shipping end-to-end — in-browser ML and
-          offline-first PWAs on the frontend, Go, Node, Laravel and GraphQL on the
+          offline-first PWAs on the frontend, Elixir, Go, Node, Laravel and GraphQL on the
           backend, and the streaming ETL and BI warehouses behind the dashboards.
           I build for real-world constraints: multi-tenant health systems,
           government field apps and fintech, mostly where connectivity isn&apos;t a

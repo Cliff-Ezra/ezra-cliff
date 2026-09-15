@@ -28,6 +28,7 @@ import {
   SiFlutter,
   SiNodedotjs,
   SiLaravel,
+  SiElixir,
   SiPostgresql,
   SiMysql,
   SiRedis,
@@ -79,6 +80,7 @@ export const skillCategories: SkillCategory[] = [
   {
     label: "Backend & Frameworks",
     skills: [
+      { name: "Elixir", icon: SiElixir, color: "#4B275F" },
       { name: "Node.js", icon: SiNodedotjs, color: "#5FA04E" },
       { name: "Laravel", icon: SiLaravel, color: "#FF2D20" },
     ],
